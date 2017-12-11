@@ -1,0 +1,30 @@
+{
+  "name": "lock-threads",
+  "version": "0.1.0",
+  "description":
+    "A GitHub App built with Probot that locks closed issues and pull requests.",
+  "author": "Armin Sebastian",
+  "license": "MIT",
+  "repository": "https://github.com/dessant/lock-threads",
+  "scripts": {
+    "start": "probot run ./src/index.js",
+    "watch": "nodemon --exec 'npm start'",
+    "update": "ncu --upgrade --upgradeAll && yarn",
+    "push": "git push --follow-tags origin master",
+    "release": "standard-version && yarn run push"
+  },
+  "dependencies": {
+    "probot": "^3.0.3",
+    "probot-scheduler": "^1.0.3"
+  },
+  "devDependencies": {
+    "localtunnel": "^1.8.3",
+    "nodemon": "1.12.5",
+    "npm-check-updates": "^2.13.0",
+    "standard-version": "^4.2.0"
+  },
+  "engines": {
+    "node": "8.9.0",
+    "npm": "5.5.1"
+  }
+}
