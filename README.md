@@ -35,6 +35,9 @@ lockComment: >
   This thread has been automatically locked because it has not had recent
   activity. Please open a new issue for related bugs and link to relevant
   comments in this thread.
+# Issues or pull requests with these labels will not be locked
+# exemptLabels:
+#   - no-locking
 # Limit to only `issues` or `pulls`
 # only: issues
 ```

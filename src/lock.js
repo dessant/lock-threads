@@ -40,16 +40,22 @@ module.exports = class Lock {
 
   search() {
     const {owner, repo} = this.context.repo();
-    const {daysUntilLock, only} = this.config;
+    const {exemptLabels, daysUntilLock, only} = this.config;
     const timestamp = this.since(daysUntilLock)
       .toISOString()
       .replace(/\.\d{3}\w$/, '');
 
     let query = `repo:${owner}/${repo} is:closed updated:<${timestamp}`;
+    if (exemptLabels && exemptLabels.length) {
+      const queryPart = exemptLabels
+        .map(label => `-label:"${label}"`)
+        .join(' ');
+      query += ` ${queryPart}`;
+    }
     if (only === 'issues') {
-      query += ` is:issue`;
+      query += ' is:issue';
     } else if (only === 'pulls') {
-      query += ` is:pr`;
+      query += ' is:pr';
     }
 
     this.logger.info(`[${owner}/${repo}] Searching`);
