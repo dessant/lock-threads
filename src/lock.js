@@ -23,7 +23,7 @@ module.exports = class Lock {
           body: lockComment
         });
       }
-      
+
       if (lockLabel) {
         this.logger.info(`[${issueUrl}] Labeling`);
         await this.context.github.issues.addLabels({
@@ -60,7 +60,7 @@ module.exports = class Lock {
       .replace(/\.\d{3}\w$/, '');
 
     let query = `repo:${owner}/${repo} is:closed updated:<${timestamp}`;
-    if (exemptLabels && exemptLabels.length) {
+    if (exemptLabels.length) {
       const queryPart = exemptLabels
         .map(label => `-label:"${label}"`)
         .join(' ');
