@@ -40,6 +40,8 @@ lockComment: >
 #   - no-locking
 # Limit to only `issues` or `pulls`
 # only: issues
+# Add some labels when locking (useful when lockComment is false)
+lockLabels: ['outdated']
 ```
 
 ## How are issues and pull requests determined to be inactive?
