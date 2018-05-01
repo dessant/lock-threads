@@ -28,7 +28,11 @@ module.exports = class Lock {
       await this.context.github.issues.lock({
         owner,
         repo,
-        number: issue.number
+        number: issue.number,
+        lock_reason: 'resolved',
+        headers: {
+          accept: 'application/vnd.github.sailor-v-preview+json'
+        }
       });
     }
   }
