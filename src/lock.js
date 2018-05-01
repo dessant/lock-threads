@@ -24,8 +24,6 @@ module.exports = class Lock {
         });
       }
       
-      const result = await octokit.issues.addLabels({owner, repo, number, labels})
-      
       if (lockLabels) {
         this.logger.info(`[${issueUrl}] Labeling`);
         await this.context.github.issues.addLabels({
