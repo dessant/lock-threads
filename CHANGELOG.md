@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.4.0"></a>
+# [0.4.0](https://github.com/dessant/lock-threads/compare/v0.3.0...v0.4.0) (2018-05-01)
+
+
+### Bug Fixes
+
+* set defaults for new config options ([b75ee6d](https://github.com/dessant/lock-threads/commit/b75ee6d))
+
+
+### Features
+
+* add labels when locking ([#4](https://github.com/dessant/lock-threads/issues/4)) ([4c0bc99](https://github.com/dessant/lock-threads/commit/4c0bc99))
+
+
+
 <a name="0.3.0"></a>
 # [0.3.0](https://github.com/dessant/lock-threads/compare/v0.2.0...v0.3.0) (2018-05-01)
 
