@@ -13,14 +13,14 @@
     "release": "standard-version && yarn run push"
   },
   "dependencies": {
-    "probot": "^3.0.3",
-    "probot-scheduler": "^1.0.3"
+    "probot": "^6.1.0",
+    "probot-scheduler": "^1.1.0"
   },
   "devDependencies": {
-    "localtunnel": "^1.8.3",
-    "nodemon": "1.12.5",
-    "npm-check-updates": "^2.13.0",
-    "standard-version": "^4.2.0"
+    "nodemon": "1.17.3",
+    "npm-check-updates": "^2.14.2",
+    "smee-client": "^1.0.1",
+    "standard-version": "^4.3.0"
   },
   "engines": {
     "node": "8.9.0",
