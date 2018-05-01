@@ -9,7 +9,7 @@ module.exports = class Lock {
 
   async lock() {
     const {owner, repo} = this.context.repo();
-    const {lockComment, lockLabels} = this.config;
+    const {lockComment, lockLabel} = this.config;
 
     const issues = await this.getLockableIssues();
     for (const issue of issues) {
@@ -24,13 +24,13 @@ module.exports = class Lock {
         });
       }
       
-      if (lockLabels) {
+      if (lockLabel) {
         this.logger.info(`[${issueUrl}] Labeling`);
         await this.context.github.issues.addLabels({
           owner,
           repo,
           number: issue.number,
-          labels: lockLabels
+          labels: [lockLabel]
         });
       }
 
