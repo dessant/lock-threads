@@ -13,6 +13,7 @@
     "release": "standard-version && yarn run push"
   },
   "dependencies": {
+    "joi": "^13.2.0",
     "probot": "^6.1.0",
     "probot-scheduler": "^1.1.0"
   },

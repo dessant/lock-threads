@@ -1,17 +1,16 @@
-const defaults = require('./defaults');
-
 module.exports = class Lock {
   constructor(context, config, logger) {
     this.context = context;
-    this.config = Object.assign({}, defaults, config);
+    this.config = config;
     this.logger = logger;
   }
 
-  async lock() {
+  async lock(type) {
     const {owner, repo} = this.context.repo();
-    const {lockComment, lockLabel} = this.config;
+    const lockLabel = this.getConfigValue(type, 'lockLabel');
+    const lockComment = this.getConfigValue(type, 'lockComment');
 
-    const issues = await this.getLockableIssues();
+    const issues = await this.getLockableIssues(type);
     for (const issue of issues) {
       const issueUrl = `${owner}/${repo}/issues/${issue.number}`;
       if (lockComment) {
@@ -47,17 +46,12 @@ module.exports = class Lock {
     }
   }
 
-  async getLockableIssues() {
-    const results = await this.search();
-    return results.data.items.filter(issue => !issue.locked);
-  }
-
-  search() {
+  search(type) {
     const {owner, repo} = this.context.repo();
-    const {exemptLabels, daysUntilLock, only} = this.config;
-    const timestamp = this.since(daysUntilLock)
-      .toISOString()
-      .replace(/\.\d{3}\w$/, '');
+    const daysUntilLock = this.getConfigValue(type, 'daysUntilLock');
+    const exemptLabels = this.getConfigValue(type, 'exemptLabels');
+
+    const timestamp = this.getUpdatedTimestamp(daysUntilLock);
 
     let query = `repo:${owner}/${repo} is:closed updated:<${timestamp}`;
     if (exemptLabels.length) {
@@ -66,13 +60,13 @@ module.exports = class Lock {
         .join(' ');
       query += ` ${queryPart}`;
     }
-    if (only === 'issues') {
+    if (type === 'issues') {
       query += ' is:issue';
-    } else if (only === 'pulls') {
+    } else {
       query += ' is:pr';
     }
 
-    this.logger.info(`[${owner}/${repo}] Searching`);
+    this.logger.info(`[${owner}/${repo}] Searching ${type}`);
     return this.context.github.search.issues({
       q: query,
       sort: 'updated',
@@ -81,8 +75,21 @@ module.exports = class Lock {
     });
   }
 
-  since(days) {
+  async getLockableIssues(type) {
+    const results = await this.search(type);
+    return results.data.items.filter(issue => !issue.locked);
+  }
+
+  getUpdatedTimestamp(days) {
     const ttl = days * 24 * 60 * 60 * 1000;
-    return new Date(new Date() - ttl);
+    const date = new Date(new Date() - ttl);
+    return date.toISOString().replace(/\.\d{3}\w$/, '');
+  }
+
+  getConfigValue(type, key) {
+    if (this.config[type] && typeof this.config[type][key] !== 'undefined') {
+      return this.config[type][key];
+    }
+    return this.config[key];
   }
 };
