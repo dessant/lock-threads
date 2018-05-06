@@ -1,4 +1,4 @@
-A GitHub App that locks closed issues and pull requests.
+A GitHub App that locks closed issues and pull requests after a period of inactivity.
 
 ![](https://raw.githubusercontent.com/dessant/lock-threads/master/assets/screenshot.png)
 
