@@ -25,7 +25,7 @@ or [Bitcoin](https://goo.gl/uJUAaU).
 Create `.github/lock.yml` in the default branch to enable the app.
 The file can be empty, or it can override any of these default settings:
 
-```yml
+```yaml
 # Configuration for lock-threads - https://github.com/dessant/lock-threads
 
 # Number of days of inactivity before a closed issue or pull request is locked
