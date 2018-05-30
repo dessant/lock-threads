@@ -22,15 +22,15 @@
     "src"
   ],
   "dependencies": {
-    "joi": "^13.2.0",
-    "probot": "^6.1.0",
+    "joi": "^13.3.0",
+    "probot": "^6.2.0",
     "probot-scheduler": "^1.1.0"
   },
   "devDependencies": {
-    "nodemon": "1.17.3",
+    "nodemon": "1.17.5",
     "npm-check-updates": "^2.14.2",
     "smee-client": "^1.0.1",
-    "standard-version": "^4.3.0"
+    "standard-version": "^4.4.0"
   },
   "engines": {
     "node": "8.9.0",
