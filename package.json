@@ -4,7 +4,11 @@
   "description": "A GitHub App built with Probot that locks closed issues and pull requests after a period of inactivity.",
   "author": "Armin Sebastian",
   "license": "MIT",
-  "repository": "https://github.com/dessant/lock-threads",
+  "repository" : {
+    "url": "https://github.com/dessant/lock-threads.git",
+    "type": "git"
+  },
+  "bugs": "https://github.com/dessant/lock-threads/issues",
   "main": "src/index.js",
   "scripts": {
     "start": "probot run ./src/index.js",
@@ -13,6 +17,10 @@
     "push": "git push --follow-tags origin master",
     "release": "standard-version && yarn run push"
   },
+  "files": [
+    "docs",
+    "src"
+  ],
   "dependencies": {
     "joi": "^13.2.0",
     "probot": "^6.1.0",
@@ -27,5 +35,16 @@
   "engines": {
     "node": "8.9.0",
     "npm": "5.5.1"
-  }
+  },
+  "keywords": [
+    "github",
+    "issues",
+    "pull requests",
+    "lock",
+    "automation",
+    "github app",
+    "probot",
+    "probot app",
+    "bot"
+  ]
 }
