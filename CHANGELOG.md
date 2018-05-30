@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.5.1"></a>
+## [0.5.1](https://github.com/dessant/lock-threads/compare/v0.5.0...v0.5.1) (2018-05-30)
+
+
+### Bug Fixes
+
+* set main module path ([d4eb339](https://github.com/dessant/lock-threads/commit/d4eb339))
+
+
+
 <a name="0.5.0"></a>
 # [0.5.0](https://github.com/dessant/lock-threads/compare/v0.4.0...v0.5.0) (2018-05-06)
 
