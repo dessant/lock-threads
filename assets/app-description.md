@@ -41,6 +41,9 @@ lockComment: >
 
 # pulls:
 #   daysUntilLock: 30
+
+# Repository to extend settings from
+# _extends: repo
 ```
 
 ## Supporting the Project

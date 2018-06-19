@@ -2006,6 +2006,13 @@ joi@^13.3.0:
     isemail "3.x.x"
     topo "3.x.x"
 
+js-yaml@^3.10.0:
+  version "3.12.0"
+  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.12.0.tgz#eaed656ec8344f10f527c6bfa1b6e2244de167d1"
+  dependencies:
+    argparse "^1.0.7"
+    esprima "^4.0.0"
+
 js-yaml@^3.6.1:
   version "3.11.0"
   resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.11.0.tgz#597c1a8bd57152f26d622ce4117851a51f5ebaef"
@@ -3060,6 +3067,12 @@ posix-character-classes@^0.1.0:
 prepend-http@^1.0.1:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/prepend-http/-/prepend-http-1.0.4.tgz#d4f4562b0ce3696e41ac52d0e002e57a635dc6dc"
+
+probot-config@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/probot-config/-/probot-config-0.1.0.tgz#b6ef11ccc468e7f28e06deb68b34e093b7c7e88e"
+  dependencies:
+    js-yaml "^3.10.0"
 
 probot-scheduler@^1.1.0:
   version "1.1.0"

@@ -1,5 +1,6 @@
 const uuidV4 = require('uuid/v4');
 const createScheduler = require('probot-scheduler');
+const getMergedConfig = require('probot-config');
 
 const App = require('./lock');
 const schema = require('./schema');
@@ -27,7 +28,7 @@ module.exports = robot => {
     const configFile = 'lock.yml';
     const repo = context.repo();
     try {
-      const repoConfig = await context.config(configFile);
+      const repoConfig = await getMergedConfig(context, configFile);
       if (!repoConfig) {
         logger.warn({repo, configFile}, 'Missing config');
         repoConfig = {perform: false};

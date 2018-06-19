@@ -54,6 +54,9 @@ lockComment: >
 
 # pulls:
 #   daysUntilLock: 30
+
+# Repository to extend settings from
+# _extends: repo
 ```
 
 ## How are issues and pull requests determined to be inactive?
