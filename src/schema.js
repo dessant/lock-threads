@@ -38,7 +38,8 @@ const schema = Joi.object().keys({
     .valid('issues', 'pulls')
     .description('Limit to only `issues` or `pulls`'),
   pulls: Joi.object().keys(fields),
-  issues: Joi.object().keys(fields)
+  issues: Joi.object().keys(fields),
+  perform: Joi.boolean().default(!process.env.DRY_RUN)
 });
 
 module.exports = schema;

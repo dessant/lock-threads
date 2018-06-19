@@ -24,7 +24,8 @@
   "dependencies": {
     "joi": "^13.3.0",
     "probot": "^6.2.0",
-    "probot-scheduler": "^1.1.0"
+    "probot-scheduler": "^1.1.0",
+    "uuid": "^3.2.1"
   },
   "devDependencies": {
     "nodemon": "1.17.5",

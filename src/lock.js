@@ -2,42 +2,47 @@ module.exports = class Lock {
   constructor(context, config, logger) {
     this.context = context;
     this.config = config;
-    this.logger = logger;
+    this.log = logger;
+  }
+
+  async lockThreads() {
+    const {only: type} = this.config;
+    if (type) {
+      await this.lock(type);
+    } else {
+      await this.lock('issues');
+      await this.lock('pulls');
+    }
   }
 
   async lock(type) {
-    const {owner, repo} = this.context.repo();
+    const repo = this.context.repo();
     const lockLabel = this.getConfigValue(type, 'lockLabel');
     const lockComment = this.getConfigValue(type, 'lockComment');
 
-    const issues = await this.getLockableIssues(type);
-    for (const issue of issues) {
-      const issueUrl = `${owner}/${repo}/issues/${issue.number}`;
+    const results = await this.getLockableIssues(type);
+    for (const result of results) {
+      const issue = {...repo, number: result.number};
+
       if (lockComment) {
-        this.logger.info(`[${issueUrl}] Commenting`);
+        this.log.info({issue}, 'Commenting');
         await this.context.github.issues.createComment({
-          owner,
-          repo,
-          number: issue.number,
+          ...issue,
           body: lockComment
         });
       }
 
       if (lockLabel) {
-        this.logger.info(`[${issueUrl}] Labeling`);
+        this.log.info({issue}, 'Labeling');
         await this.context.github.issues.addLabels({
-          owner,
-          repo,
-          number: issue.number,
+          ...issue,
           labels: [lockLabel]
         });
       }
 
-      this.logger.info(`[${issueUrl}] Locking`);
+      this.log.info({issue}, 'Locking');
       await this.context.github.issues.lock({
-        owner,
-        repo,
-        number: issue.number,
+        ...issue,
         lock_reason: 'resolved',
         headers: {
           accept: 'application/vnd.github.sailor-v-preview+json'
@@ -66,7 +71,7 @@ module.exports = class Lock {
       query += ' is:pr';
     }
 
-    this.logger.info(`[${owner}/${repo}] Searching ${type}`);
+    this.log.info({repo: {owner, repo}}, `Searching ${type}`);
     return this.context.github.search.issues({
       q: query,
       sort: 'updated',
