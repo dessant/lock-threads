@@ -22,7 +22,11 @@ const fields = {
 
   lockComment: Joi.alternatives()
     .try(Joi.string(), Joi.boolean().only(false))
-    .description('Comment to post before locking. Set to `false` to disable')
+    .description('Comment to post before locking. Set to `false` to disable'),
+
+  setLockReason: Joi.boolean().description(
+    'Assign `resolved` as the reason for locking. Set to `false` to disable'
+  )
 };
 
 const schema = Joi.object().keys({
@@ -34,6 +38,7 @@ const schema = Joi.object().keys({
       'any recent activity after it was closed. Please open a new issue for ' +
       'related bugs.'
   ),
+  setLockReason: fields.setLockReason.default(true),
   only: Joi.string()
     .valid('issues', 'pulls')
     .description('Limit to only `issues` or `pulls`'),

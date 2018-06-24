@@ -19,6 +19,7 @@ module.exports = class Lock {
     const repo = this.context.repo();
     const lockLabel = this.getConfigValue(type, 'lockLabel');
     const lockComment = this.getConfigValue(type, 'lockComment');
+    const setLockReason = this.getConfigValue(type, 'setLockReason');
 
     const results = await this.getLockableIssues(type);
     for (const result of results) {
@@ -41,13 +42,19 @@ module.exports = class Lock {
       }
 
       this.log.info({issue}, 'Locking');
-      await this.context.github.issues.lock({
-        ...issue,
-        lock_reason: 'resolved',
-        headers: {
-          accept: 'application/vnd.github.sailor-v-preview+json'
-        }
-      });
+      let params;
+      if (setLockReason) {
+        params = {
+          ...issue,
+          lock_reason: 'resolved',
+          headers: {
+            accept: 'application/vnd.github.sailor-v-preview+json'
+          }
+        };
+      } else {
+        params = issue;
+      }
+      await this.context.github.issues.lock(params);
     }
   }
 

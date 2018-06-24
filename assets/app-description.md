@@ -30,6 +30,9 @@ lockComment: >
   any recent activity after it was closed. Please open a new issue for
   related bugs.
 
+# Assign `resolved` as the reason for locking. Set to `false` to disable
+setLockReason: true
+
 # Limit to only `issues` or `pulls`
 # only: issues
 
