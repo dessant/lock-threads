@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.6.0"></a>
+# [0.6.0](https://github.com/dessant/lock-threads/compare/v0.5.2...v0.6.0) (2018-06-24)
+
+
+### Features
+
+* add option for setting lock reason ([5b9d6f4](https://github.com/dessant/lock-threads/commit/5b9d6f4)), closes [#7](https://github.com/dessant/lock-threads/issues/7)
+* extend settings from a different repository ([9da62c6](https://github.com/dessant/lock-threads/commit/9da62c6))
+* use child logger for scheduled tasks and add DRY_RUN env var ([4abb957](https://github.com/dessant/lock-threads/commit/4abb957))
+
+
+
 <a name="0.5.2"></a>
 ## [0.5.2](https://github.com/dessant/lock-threads/compare/v0.5.1...v0.5.2) (2018-05-30)
 
