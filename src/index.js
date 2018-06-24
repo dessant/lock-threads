@@ -31,7 +31,7 @@ module.exports = async robot => {
     try {
       let repoConfig = await getMergedConfig(context, file);
       if (!repoConfig) {
-        log.warn({repo, file}, 'Missing config');
+        log.info({repo, file}, 'Missing config');
         repoConfig = {perform: false};
       }
       const {error, value} = schema.validate(repoConfig);
