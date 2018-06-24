@@ -1,6 +1,6 @@
 {
   "name": "lock-threads",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "A GitHub App built with Probot that locks closed issues and pull requests after a period of inactivity.",
   "author": "Armin Sebastian",
   "license": "MIT",
