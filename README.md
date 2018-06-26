@@ -1,5 +1,7 @@
 # Lock Threads
 
+[![npm](https://img.shields.io/npm/v/lock-threads.svg?style=flat-square&colorB=007EC6)](https://www.npmjs.com/package/lock-threads)
+
 Lock Threads is a GitHub App inspired by [Stale](https://github.com/probot/stale)
 and built with [Probot](https://github.com/probot/probot)
 that locks closed issues and pull requests after a period of inactivity.
