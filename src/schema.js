@@ -44,6 +44,7 @@ const schema = Joi.object().keys({
     .description('Limit to only `issues` or `pulls`'),
   pulls: Joi.object().keys(fields),
   issues: Joi.object().keys(fields),
+  _extends: Joi.string().description('Repository to extend settings from'),
   perform: Joi.boolean().default(!process.env.DRY_RUN)
 });
 
