@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.6.2"></a>
+## [0.6.2](https://github.com/dessant/lock-threads/compare/v0.6.1...v0.6.2) (2018-06-27)
+
+
+### Bug Fixes
+
+* add missing config key to schema ([83e345c](https://github.com/dessant/lock-threads/commit/83e345c))
+
+
+
 <a name="0.6.1"></a>
 ## [0.6.1](https://github.com/dessant/lock-threads/compare/v0.6.0...v0.6.1) (2018-06-24)
 
