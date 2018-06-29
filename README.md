@@ -18,7 +18,7 @@ please consider contributing with [Patreon](https://goo.gl/qRhKSW),
 ## Usage
 
 1. **[Install the GitHub App](https://github.com/apps/lock)**
-   for the required repositories
+   for the intended repositories
 2. Create `.github/lock.yml` based on the template below
 3. It will start scanning for closed issues and/or pull requests within an hour
 
