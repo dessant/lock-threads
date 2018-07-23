@@ -3074,6 +3074,10 @@ probot-config@^0.1.0:
   dependencies:
     js-yaml "^3.10.0"
 
+probot-messages@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/probot-messages/-/probot-messages-0.1.0.tgz#0a6b279486b2bb40a25e37960f7341ac40e5b0c9"
+
 probot-scheduler@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/probot-scheduler/-/probot-scheduler-1.1.0.tgz#eda193fd7faaf9a193a8b362903d78741dcda9b7"
