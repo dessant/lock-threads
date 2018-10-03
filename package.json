@@ -22,17 +22,17 @@
     "src"
   ],
   "dependencies": {
-    "joi": "^13.3.0",
-    "probot": "^6.2.0",
-    "probot-config": "^0.1.0",
+    "joi": "^13.7.0",
+    "probot": "^7.2.0",
+    "probot-config": "^0.2.0",
     "probot-messages": "^0.1.0",
-    "probot-scheduler": "^1.1.0",
-    "uuid": "^3.2.1"
+    "probot-scheduler": "^1.2.0",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "nodemon": "1.17.5",
+    "nodemon": "1.18.4",
     "npm-check-updates": "^2.14.2",
-    "smee-client": "^1.0.1",
+    "smee-client": "^1.0.2",
     "standard-version": "^4.4.0"
   },
   "engines": {
