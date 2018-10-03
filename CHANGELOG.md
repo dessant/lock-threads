@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.7.1"></a>
+## [0.7.1](https://github.com/dessant/lock-threads/compare/v0.7.0...v0.7.1) (2018-10-03)
+
+
+### Bug Fixes
+
+* allow newer versions of node ([436ec0d](https://github.com/dessant/lock-threads/commit/436ec0d))
+
+
+
 <a name="0.7.0"></a>
 # [0.7.0](https://github.com/dessant/lock-threads/compare/v0.6.2...v0.7.0) (2018-07-23)
 
