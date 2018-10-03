@@ -1,6 +1,7 @@
 # Lock Threads
 
-[![npm](https://img.shields.io/npm/v/lock-threads.svg?style=flat-square&colorB=007EC6)](https://www.npmjs.com/package/lock-threads)
+[![Build Status](https://img.shields.io/travis/com/dessant/lock-threads/master.svg)](https://travis-ci.com/dessant/lock-threads)
+[![Version](https://img.shields.io/npm/v/lock-threads.svg?colorB=007EC6)](https://www.npmjs.com/package/lock-threads)
 
 Lock Threads is a GitHub App inspired by [Stale](https://github.com/probot/stale)
 and built with [Probot](https://github.com/probot/probot)
