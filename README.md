@@ -34,6 +34,10 @@ The file can be empty, or it can override any of these default settings:
 # Number of days of inactivity before a closed issue or pull request is locked
 daysUntilLock: 365
 
+# Skip issues and pull requests created before a given timestamp. Timestamp must
+# follow ISO 8601 (`YYYY-MM-DD`). Set to `false` to disable.
+skipCreatedBefore: false
+
 # Issues and pull requests with these labels will not be locked. Set to `[]` to disable
 exemptLabels: []
 

@@ -62,6 +62,7 @@ module.exports = class Lock {
     const {owner, repo} = this.context.repo();
     const daysUntilLock = this.getConfigValue(type, 'daysUntilLock');
     const exemptLabels = this.getConfigValue(type, 'exemptLabels');
+    const skipCreatedBeforeTimestamp = this.getConfigValue(type, 'skipCreatedBefore');
 
     const timestamp = this.getUpdatedTimestamp(daysUntilLock);
 
@@ -76,6 +77,10 @@ module.exports = class Lock {
       query += ' is:issue';
     } else {
       query += ' is:pr';
+    }
+
+    if (skipCreatedBeforeTimestamp) {
+      query += ` created:>${skipCreatedBeforeTimestamp}`;
     }
 
     this.log.info({repo: {owner, repo}}, `Searching ${type}`);
