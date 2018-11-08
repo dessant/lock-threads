@@ -7,6 +7,13 @@ const fields = {
       'Number of days of inactivity before a closed issue or pull request is locked'
     ),
 
+  skipCreatedBefore: Joi.alternatives()
+    .try(Joi.string(), Joi.boolean().only(false))
+    .description(
+      'Skip issues and pull requests created before a given timestamp. Timestamp' +
+      'must follow ISO 8601 (`YYYY-MM-DD`). Set to `false` to disable.'
+    ),
+
   exemptLabels: Joi.array()
     .single()
     .items(Joi.string())
@@ -31,6 +38,7 @@ const fields = {
 
 const schema = Joi.object().keys({
   daysUntilLock: fields.daysUntilLock.default(365),
+  skipCreatedBefore: fields.skipCreatedBefore.default(false),
   exemptLabels: fields.exemptLabels.default([]),
   lockLabel: fields.lockLabel.default(false),
   lockComment: fields.lockComment.default(
