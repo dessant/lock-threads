@@ -10,8 +10,8 @@ const fields = {
   skipCreatedBefore: Joi.alternatives()
     .try(Joi.string(), Joi.boolean().only(false))
     .description(
-      'Skip issues and pull requests created before a given timestamp. Timestamp' +
-      'must follow ISO 8601 (`YYYY-MM-DD`). Set to `false` to disable.'
+      'Skip issues and pull requests created before a given timestamp. Timestamp ' +
+      'must follow ISO 8601 (`YYYY-MM-DD`). Set to `false` to disable'
     ),
 
   exemptLabels: Joi.array()

@@ -19,7 +19,7 @@ Create `.github/lock.yml` in the default branch to enable the app. The file can 
 daysUntilLock: 365
 
 # Skip issues and pull requests created before a given timestamp. Timestamp must
-# follow ISO 8601 (`YYYY-MM-DD`). Set to `false` to disable.
+# follow ISO 8601 (`YYYY-MM-DD`). Set to `false` to disable
 skipCreatedBefore: false
 
 # Issues and pull requests with these labels will not be locked. Set to `[]` to disable
