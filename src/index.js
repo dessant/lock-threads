@@ -34,6 +34,12 @@ module.exports = async robot => {
       if (!repoConfig) {
         repoConfig = {perform: false};
       }
+      if (!repoConfig || !repoConfig.lockThreads) {
+        repoConfig = {perform: false};
+      }
+      if (repoConfig.lockThreads) {
+        repoConfig = repoConfig.lockThreads;
+      }
       const {error, value} = schema.validate(repoConfig);
       if (error) {
         throw error;
