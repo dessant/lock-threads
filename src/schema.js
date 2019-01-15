@@ -2,7 +2,7 @@ const Joi = require('joi');
 
 const fields = {
   daysUntilLock: Joi.number()
-    .min(1)
+    .min(0)
     .description(
       'Number of days of inactivity before a closed issue or pull request is locked'
     ),
