@@ -22,22 +22,22 @@
     "src"
   ],
   "dependencies": {
-    "joi": "^13.7.0",
-    "probot": "^7.2.0",
-    "probot-config": "^0.2.0",
-    "probot-messages": "^0.1.0",
-    "probot-scheduler": "^1.2.0",
+    "joi": "^14.3.1",
+    "probot": "^7.5.0",
+    "probot-config": "^1.0.1",
+    "probot-messages": "^0.1.1",
+    "probot-scheduler": "probot/scheduler#75bc5dd3fcac5bf6448ce85c63d1e5c2971c11a8",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "nodemon": "1.18.4",
-    "npm-check-updates": "^2.14.2",
-    "prettier": "^1.15.2",
+    "nodemon": "1.18.9",
+    "npm-check-updates": "^2.15.0",
+    "prettier": "^1.15.3",
     "smee-client": "^1.0.2",
     "standard-version": "^4.4.0"
   },
   "engines": {
-    "node": ">=8.9.0"
+    "node": ">=8.12.0"
   },
   "keywords": [
     "github",
