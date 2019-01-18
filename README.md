@@ -13,8 +13,8 @@ that locks closed issues and pull requests after a period of inactivity.
 
 The continued development of Lock Threads is made possible
 thanks to the support of awesome backers. If you'd like to join them,
-please consider contributing with [Patreon](https://goo.gl/qRhKSW),
-[PayPal](https://goo.gl/5FnBaw) or [Bitcoin](https://goo.gl/uJUAaU).
+please consider contributing with [Patreon](https://www.patreon.com/dessant),
+[PayPal](https://www.paypal.me/ArminSebastian) or [Bitcoin](https://goo.gl/uJUAaU).
 
 ## Usage
 
@@ -23,13 +23,18 @@ please consider contributing with [Patreon](https://goo.gl/qRhKSW),
 2. Create `.github/lock.yml` based on the template below
 3. It will start scanning for closed issues and/or pull requests within an hour
 
+⚠️ **If possible, install the app only for select repositories.
+Do not leave the `All repositories` option selected, unless you intend
+to use the app for all current and future repositories.**
+
 #### Configuration
 
-Create `.github/lock.yml` in the default branch to enable the app.
+Create `.github/lock.yml` in the default branch to enable the app,
+or add it at the same file path to a special repository named `.github`.
 The file can be empty, or it can override any of these default settings:
 
 ```yaml
-# Configuration for lock-threads - https://github.com/dessant/lock-threads
+# Configuration for Lock Threads - https://github.com/dessant/lock-threads
 
 # Number of days of inactivity before a closed issue or pull request is locked
 daysUntilLock: 365
@@ -78,15 +83,16 @@ applying or removing milestones, or pushing commits.
 
 An easy way to check and see which issues or pull requests will initially
 be locked is to add the `updated` search qualifier to either the issue
-or pull request page filter for your repository: `is:closed updated:<2016-12-20`.
+or pull request page filter for your repository:
+`is:closed is:unlocked updated:<2016-12-20`.
 Adjust the date to be 365 days ago (or whatever you set for `daysUntilLock`)
 to see which issues or pull requests will be locked.
 
-## Why are only some issues and pull requests locked?
+## Why are only some issues and pull requests processed?
 
 To avoid triggering abuse prevention mechanisms on GitHub, only 30 issues
-and pull requests will be locked per hour. If your repository has more
-than that, it will just take a few hours or days to lock them all.
+and pull requests will be handled per hour. If your repository has more
+than that, it will just take a few hours or days to process them all.
 
 ## Deployment
 
@@ -95,5 +101,7 @@ instance of this app.
 
 ## License
 
-Lock Threads is released under the terms of the MIT License.
-Please refer to the [LICENSE](LICENSE) file.
+Copyright (c) 2017-2019 Armin Sebastian
+
+This software is released under the terms of the MIT License.
+See the [LICENSE](LICENSE) file for further information.
