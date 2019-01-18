@@ -21,7 +21,7 @@ module.exports = class Lock {
     const lockComment = this.getConfigValue(type, 'lockComment');
     const setLockReason = this.getConfigValue(type, 'setLockReason');
 
-    const results = await this.getLockableIssues(type);
+    const results = await this.search(type);
     for (const result of results) {
       const issue = {...repo, number: result.number};
 
@@ -58,43 +58,52 @@ module.exports = class Lock {
     }
   }
 
-  search(type) {
+  async search(type) {
     const {owner, repo} = this.context.repo();
     const daysUntilLock = this.getConfigValue(type, 'daysUntilLock');
     const exemptLabels = this.getConfigValue(type, 'exemptLabels');
-    const skipCreatedBeforeTimestamp = this.getConfigValue(type, 'skipCreatedBefore');
+    const skipCreatedBefore = this.getConfigValue(type, 'skipCreatedBefore');
 
     const timestamp = this.getUpdatedTimestamp(daysUntilLock);
 
-    let query = `repo:${owner}/${repo} is:closed updated:<${timestamp}`;
+    let query = `repo:${owner}/${repo} updated:<${timestamp} is:closed is:unlocked`;
+
     if (exemptLabels.length) {
       const queryPart = exemptLabels
         .map(label => `-label:"${label}"`)
         .join(' ');
       query += ` ${queryPart}`;
     }
+
+    if (skipCreatedBefore) {
+      query += ` created:>${skipCreatedBefore}`;
+    }
+
     if (type === 'issues') {
       query += ' is:issue';
     } else {
       query += ' is:pr';
     }
 
-    if (skipCreatedBeforeTimestamp) {
-      query += ` created:>${skipCreatedBeforeTimestamp}`;
-    }
-
     this.log.info({repo: {owner, repo}}, `Searching ${type}`);
-    return this.context.github.search.issues({
+    const results = (await this.context.github.search.issues({
       q: query,
       sort: 'updated',
       order: 'desc',
       per_page: 30
-    });
-  }
+    })).data.items;
 
-  async getLockableIssues(type) {
-    const results = await this.search(type);
-    return results.data.items.filter(issue => !issue.locked);
+    // `is:unlocked` search qualifier is undocumented, warn on wrong results
+    const wrongResults = results.filter(
+      issue => issue.state === 'open' || issue.locked
+    );
+    if (wrongResults.length) {
+      const issues = wrongResults.map(issue => issue.number);
+      this.log.warn({query, issues}, 'Wrong search results');
+      return [];
+    }
+
+    return results;
   }
 
   getUpdatedTimestamp(days) {
