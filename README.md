@@ -76,7 +76,7 @@ setLockReason: true
 
 ## How are issues and pull requests determined to be inactive?
 
-The app uses GitHub's [updated](https://git.io/vbR9z) search qualifier
+The app uses GitHub's [updated](https://git.io/fhRnE) search qualifier
 to determine inactivity. Any change to an issue or pull request
 is considered an update, including comments, changing labels,
 applying or removing milestones, or pushing commits.
