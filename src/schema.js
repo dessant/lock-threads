@@ -3,6 +3,7 @@ const Joi = require('joi');
 const fields = {
   daysUntilLock: Joi.number()
     .min(1)
+    .max(3650)
     .description(
       'Number of days of inactivity before a closed issue or pull request is locked'
     ),
@@ -11,7 +12,7 @@ const fields = {
     .try(Joi.string(), Joi.boolean().only(false))
     .description(
       'Skip issues and pull requests created before a given timestamp. Timestamp ' +
-      'must follow ISO 8601 (`YYYY-MM-DD`). Set to `false` to disable'
+        'must follow ISO 8601 (`YYYY-MM-DD`). Set to `false` to disable'
     ),
 
   exemptLabels: Joi.array()
