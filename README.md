@@ -43,7 +43,7 @@ daysUntilLock: 365
 # follow ISO 8601 (`YYYY-MM-DD`). Set to `false` to disable
 skipCreatedBefore: false
 
-# Issues and pull requests with these labels will not be locked. Set to `[]` to disable
+# Issues and pull requests with these labels will be ignored. Set to `[]` to disable
 exemptLabels: []
 
 # Label to add before locking, such as `outdated`. Set to `false` to disable

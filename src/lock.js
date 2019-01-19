@@ -76,7 +76,7 @@ module.exports = class Lock {
     }
 
     if (skipCreatedBefore) {
-      query += ` created:>${skipCreatedBefore}`;
+      query += ` created:>${this.getISOTimestamp(skipCreatedBefore)}`;
     }
 
     if (type === 'issues') {
@@ -93,14 +93,18 @@ module.exports = class Lock {
       per_page: 30
     })).data.items;
 
-    // `is:unlocked` search qualifier is undocumented, skip wrong results
+    // `is:unlocked` search qualifier is undocumented, skip locked issues
     return results.filter(issue => !issue.locked);
   }
 
   getUpdatedTimestamp(days) {
     const ttl = days * 24 * 60 * 60 * 1000;
     const date = new Date(new Date() - ttl);
-    return date.toISOString().replace(/\.\d{3}\w$/, '');
+    return this.getISOTimestamp(date);
+  }
+
+  getISOTimestamp(date) {
+    return date.toISOString().split('.')[0] + 'Z';
   }
 
   getConfigValue(type, key) {
