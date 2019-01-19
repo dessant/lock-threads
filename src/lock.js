@@ -93,17 +93,8 @@ module.exports = class Lock {
       per_page: 30
     })).data.items;
 
-    // `is:unlocked` search qualifier is undocumented, warn on wrong results
-    const wrongResults = results.filter(
-      issue => issue.state === 'open' || issue.locked
-    );
-    if (wrongResults.length) {
-      const issues = wrongResults.map(issue => issue.number);
-      this.log.warn({query, issues}, 'Wrong search results');
-      return [];
-    }
-
-    return results;
+    // `is:unlocked` search qualifier is undocumented, skip wrong results
+    return results.filter(issue => !issue.locked);
   }
 
   getUpdatedTimestamp(days) {
