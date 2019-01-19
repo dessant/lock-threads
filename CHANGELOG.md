@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.8.2"></a>
+## [0.8.2](https://github.com/dessant/lock-threads/compare/v0.8.1...v0.8.2) (2019-01-19)
+
+
+### Bug Fixes
+
+* apply stricter config validation ([53b6320](https://github.com/dessant/lock-threads/commit/53b6320))
+* limit daysUntilLock to 10 years ([7ee7d4b](https://github.com/dessant/lock-threads/commit/7ee7d4b))
+* skip wrong search results ([5b94ab5](https://github.com/dessant/lock-threads/commit/5b94ab5))
+
+
+
 <a name="0.8.1"></a>
 ## [0.8.1](https://github.com/dessant/lock-threads/compare/v0.8.0...v0.8.1) (2019-01-18)
 
