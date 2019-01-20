@@ -3117,10 +3117,10 @@ prepend-http@^1.0.1:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/prepend-http/-/prepend-http-1.0.4.tgz#d4f4562b0ce3696e41ac52d0e002e57a635dc6dc"
 
-prettier@^1.15.3:
-  version "1.15.3"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.15.3.tgz#1feaac5bdd181237b54dbe65d874e02a1472786a"
-  integrity sha512-gAU9AGAPMaKb3NNSUUuhhFAS7SCO4ALTN4nRIn6PJ075Qd28Yn2Ig2ahEJWdJwJmlEBTUfC7mMUSFy8MwsOCfg==
+prettier@^1.16.0:
+  version "1.16.0"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.16.0.tgz#104dd25f5ee3d0c9d0a6ce4bb40ced8481d51219"
+  integrity sha512-MCBCYeAuZfejUPdEpkleLWvpRBwLii/Sp5jQs0eb8Ul/drGIDjkL6tAU24tk6yCGf0KPV5rhPPPlczfBmN2pWQ==
 
 probot-config@^1.0.1:
   version "1.0.1"
@@ -3130,10 +3130,10 @@ probot-config@^1.0.1:
     deepmerge "^2.2.1"
     js-yaml "^3.10.0"
 
-probot-messages@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/probot-messages/-/probot-messages-0.1.1.tgz#815b2651e45854fa8554df7a1333a98c4e53462a"
-  integrity sha512-hxG2zlLGJiIP7WYOiN0npEyXTmBiizWxow9s9aBgM70/YOyZpKgxUETesFCgpkOO71lYg/A3eF6AeKQ5IBDKSQ==
+probot-messages@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/probot-messages/-/probot-messages-0.1.2.tgz#4d04f712ba1ae2f7c2c4315c1546362f6414148a"
+  integrity sha512-bO6blNjATsGkIW+TKPQSRpQFTNXxDuzPC+DTZ7LhZ7yYkOdRSV9qt7X1D+YKbOSreEctzo8t8hvOekxWvzkWsw==
 
 probot-scheduler@probot/scheduler#75bc5dd3fcac5bf6448ce85c63d1e5c2971c11a8:
   version "1.2.0"
