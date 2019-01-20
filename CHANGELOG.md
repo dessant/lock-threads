@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.8.3"></a>
+## [0.8.3](https://github.com/dessant/lock-threads/compare/v0.8.2...v0.8.3) (2019-01-20)
+
+
+
 <a name="0.8.2"></a>
 ## [0.8.2](https://github.com/dessant/lock-threads/compare/v0.8.1...v0.8.2) (2019-01-19)
 
