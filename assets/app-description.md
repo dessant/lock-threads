@@ -12,7 +12,7 @@ A GitHub App that locks closed issues and pull requests after a period of inacti
 
 #### Configuration
 
-Create `.github/lock.yml` in the default branch to enable the app, or add it at the same file path to a special repository named `.github`. The file can be empty, or it can override any of these default settings:
+Create `.github/lock.yml` in the default branch to enable the app, or add it at the same file path to a repository named `.github`. The file can be empty, or it can override any of these default settings:
 
 ```yaml
 # Configuration for Lock Threads - https://github.com/dessant/lock-threads

@@ -30,7 +30,7 @@ to use the app for all current and future repositories.**
 #### Configuration
 
 Create `.github/lock.yml` in the default branch to enable the app,
-or add it at the same file path to a special repository named `.github`.
+or add it at the same file path to a repository named `.github`.
 The file can be empty, or it can override any of these default settings:
 
 ```yaml
