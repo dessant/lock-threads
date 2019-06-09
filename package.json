@@ -13,9 +13,9 @@
   "scripts": {
     "start": "probot run ./src/index.js",
     "watch": "nodemon --exec 'yarn run start'",
-    "update": "ncu --upgrade --upgradeAll && yarn",
+    "update": "ncu --upgrade && yarn",
     "push": "git push --follow-tags origin master",
-    "release": "standard-version && yarn run push"
+    "release": "standard-version"
   },
   "files": [
     "docs",
@@ -23,18 +23,18 @@
   ],
   "dependencies": {
     "joi": "^14.3.1",
-    "probot": "^7.5.0",
+    "probot": "^9.2.13",
     "probot-config": "^1.0.1",
-    "probot-messages": "^0.1.2",
-    "probot-scheduler": "probot/scheduler#75bc5dd3fcac5bf6448ce85c63d1e5c2971c11a8",
+    "probot-messages": "^1.0.1",
+    "probot-scheduler": "^2.0.0-beta.1",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "nodemon": "1.18.9",
-    "npm-check-updates": "^2.15.0",
-    "prettier": "^1.16.0",
-    "smee-client": "^1.0.2",
-    "standard-version": "^4.4.0"
+    "nodemon": "^1.19.1",
+    "npm-check-updates": "^3.1.10",
+    "prettier": "^1.18.2",
+    "smee-client": "^1.1.0",
+    "standard-version": "^6.0.1"
   },
   "engines": {
     "node": ">=8.12.0"

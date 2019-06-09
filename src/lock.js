@@ -23,7 +23,7 @@ module.exports = class Lock {
 
     const results = await this.search(type);
     for (const result of results) {
-      const issue = {...repo, number: result.number};
+      const issue = {...repo, issue_number: result.number};
 
       if (lockComment) {
         this.log.info({issue}, 'Commenting');
@@ -86,7 +86,7 @@ module.exports = class Lock {
     }
 
     this.log.info({repo: {owner, repo}}, `Searching ${type}`);
-    const results = (await this.context.github.search.issues({
+    const results = (await this.context.github.search.issuesAndPullRequests({
       q: query,
       sort: 'updated',
       order: 'desc',
