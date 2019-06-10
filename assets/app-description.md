@@ -4,7 +4,7 @@ A GitHub App that locks closed issues and pull requests after a period of inacti
 
 ## Supporting the Project
 
-The continued development of Lock Threads is made possible thanks to the support of awesome backers. If you'd like to join them, please consider contributing with [Patreon](https://armin.dev/go/patreon?pr=lock-threads&src=repo), [PayPal](https://armin.dev/go/paypal?pr=lock-threads&src=repo) or [Bitcoin](https://armin.dev/go/bitcoin?pr=lock-threads&src=repo).
+The continued development of Lock Threads is made possible thanks to the support of awesome backers. If you'd like to join them, please consider contributing with [Patreon](https://armin.dev/go/patreon?pr=lock-threads&src=app), [PayPal](https://armin.dev/go/paypal?pr=lock-threads&src=app) or [Bitcoin](https://armin.dev/go/bitcoin?pr=lock-threads&src=app).
 
 ## Usage
 
