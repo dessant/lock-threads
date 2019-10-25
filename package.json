@@ -22,19 +22,18 @@
     "src"
   ],
   "dependencies": {
-    "joi": "^14.3.1",
-    "probot": "^9.2.13",
-    "probot-config": "^1.0.1",
+    "@hapi/joi": "^16.1.7",
+    "probot": "^9.6.0",
     "probot-messages": "^1.0.1",
-    "probot-scheduler": "^2.0.0-beta.1",
-    "uuid": "^3.3.2"
+    "probot-scheduler": "dessant/scheduler#cbb84f6",
+    "uuid": "^3.3.3"
   },
   "devDependencies": {
-    "nodemon": "^1.19.1",
-    "npm-check-updates": "^3.1.10",
+    "nodemon": "^1.19.4",
+    "npm-check-updates": "^3.1.25",
     "prettier": "^1.18.2",
     "smee-client": "^1.1.0",
-    "standard-version": "^6.0.1"
+    "standard-version": "^7.0.0"
   },
   "engines": {
     "node": ">=8.12.0"
@@ -49,5 +48,8 @@
     "probot",
     "probot app",
     "bot"
-  ]
+  ],
+  "resolutions": {
+    "**/@octokit/endpoint": "^5.3.6"
+  }
 }
