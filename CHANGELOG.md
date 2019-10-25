@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.1](https://github.com/dessant/lock-threads/compare/v1.0.0...v1.0.1) (2019-10-25)
+
+
+### Bug Fixes
+
+* update dependencies ([9381fb2](https://github.com/dessant/lock-threads/commit/9381fb23661a4f75fd212751222d2ac7122bc693))
+
 ## [1.0.0](https://github.com/dessant/lock-threads/compare/v0.8.3...v1.0.0) (2019-06-09)
 
 
