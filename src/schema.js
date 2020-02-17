@@ -1,84 +1,175 @@
 const Joi = require('@hapi/joi');
 
-const fields = {
-  daysUntilLock: Joi.number()
-    .min(1)
-    .max(3650)
-    .description(
-      'Number of days of inactivity before a closed issue or pull request is locked'
-    ),
+const extendedJoi = Joi.extend({
+  type: 'stringList',
+  base: Joi.array(),
+  coerce: {
+    from: 'string',
+    method(value) {
+      value = value.trim();
+      if (value) {
+        value = value
+          .split(',')
+          .map(item => item.trim())
+          .filter(Boolean);
+      }
 
-  skipCreatedBefore: Joi.alternatives()
+      return {value};
+    }
+  }
+}).extend({
+  type: 'processOnly',
+  base: Joi.string(),
+  coerce: {
+    from: 'string',
+    method(value) {
+      value = value.trim();
+      if (['issues', 'prs'].includes(value)) {
+        value = value.slice(0, -1);
+      }
+
+      return {value};
+    }
+  }
+});
+
+const schema = Joi.object({
+  githubToken: Joi.string()
+    .trim()
+    .max(100),
+
+  issueLockInactiveDays: Joi.number()
+    .min(0)
+    .max(3650)
+    .precision(9)
+    .default(365),
+
+  issueExcludeCreatedBefore: Joi.alternatives()
     .try(
       Joi.date()
-        .iso()
+        // .iso()
         .min('1970-01-01T00:00:00Z')
         .max('2970-12-31T23:59:59Z'),
-      Joi.boolean().only(false)
-    )
-    .description(
-      'Skip issues and pull requests created before a given timestamp. Timestamp ' +
-        'must follow ISO 8601 (`YYYY-MM-DD`). Set to `false` to disable'
-    ),
-
-  exemptLabels: Joi.array()
-    .single()
-    .items(
       Joi.string()
         .trim()
-        .max(50)
+        .valid('')
     )
-    .description(
-      'Issues and pull requests with these labels will not be locked. Set to `[]` to disable'
-    ),
+    .default(''),
 
-  lockLabel: Joi.alternatives()
+  issueExcludeLabels: Joi.alternatives()
     .try(
+      extendedJoi
+        .stringList()
+        .items(
+          Joi.string()
+            .trim()
+            .max(50)
+        )
+        .min(1)
+        .max(30)
+        .unique(),
       Joi.string()
         .trim()
-        .max(50),
-      Joi.boolean().only(false)
+        .valid('')
     )
-    .description(
-      'Label to add before locking, such as `outdated`. Set to `false` to disable'
-    ),
+    .default(''),
 
-  lockComment: Joi.alternatives()
+  issueLockLabels: Joi.alternatives()
     .try(
+      extendedJoi
+        .stringList()
+        .items(
+          Joi.string()
+            .trim()
+            .max(50)
+        )
+        .min(1)
+        .max(30)
+        .unique(),
       Joi.string()
         .trim()
-        .max(10000),
-      Joi.boolean().only(false)
+        .valid('')
     )
-    .description('Comment to post before locking. Set to `false` to disable'),
+    .default(''),
 
-  setLockReason: Joi.boolean().description(
-    'Assign `resolved` as the reason for locking. Set to `false` to disable'
-  )
-};
+  issueLockComment: Joi.string()
+    .trim()
+    .max(10000)
+    .allow('')
+    .default(''),
 
-const schema = Joi.object().keys({
-  daysUntilLock: fields.daysUntilLock.default(365),
-  skipCreatedBefore: fields.skipCreatedBefore.default(false),
-  exemptLabels: fields.exemptLabels.default([]),
-  lockLabel: fields.lockLabel.default(false),
-  lockComment: fields.lockComment.default(
-    'This thread has been automatically locked since there has not been ' +
-      'any recent activity after it was closed. Please open a new issue for ' +
-      'related bugs.'
-  ),
-  setLockReason: fields.setLockReason.default(true),
-  only: Joi.string()
+  issueLockReason: Joi.string()
+    .valid('resolved', 'off-topic', 'too heated', 'spam', '')
+    .default(''),
+
+  prLockInactiveDays: Joi.number()
+    .min(0)
+    .max(3650)
+    .precision(9)
+    .default(365),
+
+  prExcludeCreatedBefore: Joi.alternatives()
+    .try(
+      Joi.date()
+        // .iso()
+        .min('1970-01-01T00:00:00Z')
+        .max('2970-12-31T23:59:59Z'),
+      Joi.string()
+        .trim()
+        .valid('')
+    )
+    .default(''),
+
+  prExcludeLabels: Joi.alternatives()
+    .try(
+      extendedJoi
+        .stringList()
+        .items(
+          Joi.string()
+            .trim()
+            .max(50)
+        )
+        .min(1)
+        .max(30)
+        .unique(),
+      Joi.string()
+        .trim()
+        .valid('')
+    )
+    .default(''),
+
+  prLockLabels: Joi.alternatives()
+    .try(
+      extendedJoi
+        .stringList()
+        .items(
+          Joi.string()
+            .trim()
+            .max(50)
+        )
+        .min(1)
+        .max(30)
+        .unique(),
+      Joi.string()
+        .trim()
+        .valid('')
+    )
+    .default(''),
+
+  prLockComment: Joi.string()
     .trim()
-    .valid('issues', 'pulls')
-    .description('Limit to only `issues` or `pulls`'),
-  pulls: Joi.object().keys(fields),
-  issues: Joi.object().keys(fields),
-  _extends: Joi.string()
-    .trim()
-    .max(260)
-    .description('Repository to extend settings from'),
-  perform: Joi.boolean().default(!process.env.DRY_RUN)
+    .max(10000)
+    .allow('')
+    .default(''),
+
+  prLockReason: Joi.string()
+    .valid('resolved', 'off-topic', 'too heated', 'spam', '')
+    .default(''),
+
+  processOnly: extendedJoi
+    .processOnly()
+    .valid('issue', 'pr', '')
+    .default('')
 });
 
 module.exports = schema;

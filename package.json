@@ -1,42 +1,38 @@
 {
   "name": "lock-threads",
   "version": "1.0.1",
-  "description": "A GitHub App built with Probot that locks closed issues and pull requests after a period of inactivity.",
+  "description": "A GitHub Action that locks closed issues and pull requests after a period of inactivity.",
   "author": "Armin Sebastian",
   "license": "MIT",
+  "homepage": "https://github.com/dessant/lock-threads",
   "repository": {
     "url": "https://github.com/dessant/lock-threads.git",
     "type": "git"
   },
-  "bugs": "https://github.com/dessant/lock-threads/issues",
+  "bugs": {
+    "url": "https://github.com/dessant/lock-threads/issues"
+  },
   "main": "src/index.js",
   "scripts": {
-    "start": "probot run ./src/index.js",
-    "watch": "nodemon --exec 'yarn run start'",
-    "update": "ncu --upgrade && yarn",
-    "push": "git push --follow-tags origin master",
+    "update": "ncu --upgrade && npm install",
+    "package": "ncc build src/index.js -o dist",
+    "push": "git push --tags origin master",
     "release": "standard-version"
   },
-  "files": [
-    "docs",
-    "src"
-  ],
   "dependencies": {
-    "@hapi/joi": "^16.1.7",
-    "probot": "^9.6.0",
-    "probot-messages": "^1.0.1",
-    "probot-scheduler": "dessant/scheduler#cbb84f6",
-    "uuid": "^3.3.3"
+    "@actions/core": "^1.2.2",
+    "@actions/github": "^2.1.0",
+    "@hapi/joi": "^17.1.0",
+    "decamelize": "^4.0.0"
   },
   "devDependencies": {
-    "nodemon": "^1.19.4",
-    "npm-check-updates": "^3.1.25",
-    "prettier": "^1.18.2",
-    "smee-client": "^1.1.0",
-    "standard-version": "^7.0.0"
+    "@zeit/ncc": "^0.21.1",
+    "npm-check-updates": "^4.0.1",
+    "prettier": "^1.19.1",
+    "standard-version": "^7.1.0"
   },
   "engines": {
-    "node": ">=8.12.0"
+    "node": ">=12.0.0"
   },
   "keywords": [
     "github",
@@ -44,12 +40,9 @@
     "pull requests",
     "lock",
     "automation",
-    "github app",
-    "probot",
-    "probot app",
+    "github actions",
+    "project management",
     "bot"
   ],
-  "resolutions": {
-    "**/@octokit/endpoint": "^5.3.6"
-  }
+  "private": true
 }

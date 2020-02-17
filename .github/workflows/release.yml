@@ -1,0 +1,24 @@
+name: Create release
+
+on:
+  create:
+    tags:
+      - 'v*.*'
+
+jobs:
+  release:
+    name: Release on GitHub
+    runs-on: ubuntu-18.04
+    if: contains(github.ref, '.')
+    steps:
+      - name: Create GitHub release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          body: >
+            Learn more about this release from the [changelog](https://github.com/dessant/lock-threads/blob/master/CHANGELOG.md#changelog).
+          draft: true

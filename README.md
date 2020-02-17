@@ -1,11 +1,10 @@
 # Lock Threads
 
-[![Build Status](https://img.shields.io/travis/com/dessant/lock-threads/master.svg)](https://travis-ci.com/dessant/lock-threads)
-[![Version](https://img.shields.io/npm/v/lock-threads.svg?colorB=007EC6)](https://www.npmjs.com/package/lock-threads)
+Lock Threads is a GitHub Action that locks closed issues
+and pull requests after a period of inactivity.
 
-Lock Threads is a GitHub App inspired by [Stale](https://github.com/probot/stale)
-and built with [Probot](https://github.com/probot/probot)
-that locks closed issues and pull requests after a period of inactivity.
+> The legacy version of this project can be found
+[here](https://github.com/dessant/lock-threads-app).
 
 ![](assets/screenshot.png)
 
@@ -20,90 +19,213 @@ please consider contributing with
 
 ## Usage
 
-1. **[Install the GitHub App](https://github.com/apps/lock)**
-   for the intended repositories
-2. Create `.github/lock.yml` based on the template below
-3. It will start scanning for closed issues and/or pull requests within an hour
+Create a `lock.yml` workflow file in the `.github/workflows` directory,
+use one of the [example workflows](#examples) to get started.
 
-**If possible, install the app only for select repositories.
-Do not leave the `All repositories` option selected, unless you intend
-to use the app for all current and future repositories.**
+### Inputs
+The action can be configured using [input parameters](https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idstepswith).
+All parameters are optional, except `github-token`.
 
-#### Configuration
+- **`github-token`**
+  - GitHub access token, value must be `${{ github.token }}`
+  - Required
+- **`issue-lock-inactive-days`**
+  - Number of days of inactivity before a closed issue is locked
+  - Optional, defaults to `365`
+- **`issue-exclude-created-before`**
+  - Do not lock issues created before a given timestamp,
+    value must follow ISO 8601
+  - Optional, defaults to `''`
+- **`issue-exclude-labels`**
+  - Do not lock issues with these labels, value must be
+    a comma separated list of labels or `''`
+  - Optional, defaults to `''`
+- **`issue-lock-labels`**
+  - Labels to add before locking an issue, value must be
+    a comma separated list of labels or `''`
+  - Optional, defaults to `''`
+- **`issue-lock-comment`**
+  - Comment to post before locking an issue
+  - Optional, defaults to `''`
+- **`issue-lock-reason`**
+  - Reason for locking an issue, value must be one
+    of `resolved`, `off-topic`, `too heated`, `spam` or `''`
+  - Optional, defaults to `resolved`
+- **`pr-lock-inactive-days`**
+  - Number of days of inactivity before a closed pull request is locked
+  - Optional, defaults to `365`
+- **`pr-exclude-created-before`**
+  - Do not lock pull requests created before a given timestamp,
+    value must follow ISO 8601
+  - Optional, defaults to `''`
+- **`pr-exclude-labels`**
+  - Do not lock pull requests with these labels, value must
+    be a comma separated list of labels or `''`
+  - Optional, defaults to `''`
+- **`pr-lock-labels`**
+  - Labels to add before locking a pull request, value must be
+    a comma separated list of labels or `''`
+  - Optional, defaults to `''`
+- **`pr-lock-comment`**
+  - Comment to post before locking a pull request
+  - Optional, defaults to `''`
+- **`pr-lock-reason`**
+  - Reason for locking a pull request, value must be one
+    of `resolved`, `off-topic`, `too heated`, `spam` or `''`
+  - Optional, defaults to `resolved`
+- **`process-only`**
+  - Limit locking to only issues or pull requests, value must be
+    one of `issues`, `prs` or `''`
+  - Optional, defaults to `''`
 
-Create `.github/lock.yml` in the default branch to enable the app,
-or add it at the same file path to a repository named `.github`.
-The file can be empty, or it can override any of these default settings:
+### Outputs
+
+- **`issues`**
+  - Issues that have been locked, value is a JSON string in the form
+    of `[{"owner": "actions", "repo": "toolkit", "issue_number": 1}]`
+  - Defaults to `''`
+- **`prs`**
+  - Pull requests that have been locked, value is a JSON string in the form
+    of `[{"owner": "actions", "repo": "toolkit", "issue_number": 1}]`
+  - Defaults to `''`
+
+## Examples
+
+The following workflow will search once an hour for closed issues
+and pull requests that can be locked.
 
 ```yaml
-# Configuration for Lock Threads - https://github.com/dessant/lock-threads
+name: 'Lock threads'
 
-# Number of days of inactivity before a closed issue or pull request is locked
-daysUntilLock: 365
+on:
+  schedule:
+    - cron: '0 * * * *'
 
-# Skip issues and pull requests created before a given timestamp. Timestamp must
-# follow ISO 8601 (`YYYY-MM-DD`). Set to `false` to disable
-skipCreatedBefore: false
+jobs:
+  lock:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: dessant/lock-threads@v2
+        with:
+          github-token: ${{ github.token }}
+```
 
-# Issues and pull requests with these labels will be ignored. Set to `[]` to disable
-exemptLabels: []
+Edit the workflow after the initial backlog of issues and pull requests
+has been processed to reduce the frequency of scheduled runs.
+Running the workflow only once a day helps reduce resource usage.
 
-# Label to add before locking, such as `outdated`. Set to `false` to disable
-lockLabel: false
+```yaml
+on:
+  schedule:
+    - cron: '0 0 * * *'
+```
 
-# Comment to post before locking. Set to `false` to disable
-lockComment: >
-  This thread has been automatically locked since there has not been
-  any recent activity after it was closed. Please open a new issue for
-  related bugs.
+### Available input parameters
 
-# Assign `resolved` as the reason for locking. Set to `false` to disable
-setLockReason: true
+This workflow declares all the available input parameters of the action
+and their default values. Any of the parameters can be omitted,
+except `github-token`.
 
-# Limit to only `issues` or `pulls`
-# only: issues
+```yaml
+name: 'Lock threads'
 
-# Optionally, specify configuration settings just for `issues` or `pulls`
-# issues:
-#   exemptLabels:
-#     - help-wanted
-#   lockLabel: outdated
+on:
+  schedule:
+    - cron: '0 0 * * *'
 
-# pulls:
-#   daysUntilLock: 30
+jobs:
+  lock:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: dessant/lock-threads@v2
+        with:
+          github-token: ${{ github.token }}
+          issue-lock-inactive-days: '365'
+          issue-exclude-created-before: ''
+          issue-exclude-labels: ''
+          issue-lock-labels: ''
+          issue-lock-comment: ''
+          issue-lock-reason: 'resolved'
+          pr-lock-inactive-days: '365'
+          pr-exclude-created-before: ''
+          pr-exclude-labels: ''
+          pr-lock-labels: ''
+          pr-lock-comment: ''
+          pr-lock-reason: 'resolved'
+          process-only: ''
+```
 
-# Repository to extend settings from
-# _extends: repo
+### Excluding issues and pull requests
+
+This step will lock only issues, and exclude issues created before 2018,
+or those with the `upstream` or `help-wanted` labels applied.
+
+```yaml
+    steps:
+      - uses: dessant/lock-threads@v2
+        with:
+          github-token: ${{ github.token }}
+          issue-exclude-created-before: '2018-01-01T00:00:00Z'
+          issue-exclude-labels: 'upstream, help-wanted'
+          process-only: 'issues'
+```
+
+This step will lock only pull requests, and exclude those
+with the `wip` label applied.
+
+```yaml
+    steps:
+      - uses: dessant/lock-threads@v2
+        with:
+          github-token: ${{ github.token }}
+          pr-exclude-labels: 'wip'
+          process-only: 'prs'
+```
+
+### Commenting and labeling
+
+This step will post a comment on issues and pull requests before locking them,
+and apply the `outdated` label to issues.
+
+```yaml
+    steps:
+      - uses: dessant/lock-threads@v2
+        with:
+          github-token: ${{ github.token }}
+          issue-lock-labels: 'outdated'
+          issue-lock-comment: >
+            This issue has been automatically locked since there
+            has not been any recent activity after it was closed.
+            Please open a new issue for related bugs.
+          pr-lock-comment: >
+            This pull request has been automatically locked since there
+            has not been any recent activity after it was closed.
+            Please open a new issue for related bugs.
 ```
 
 ## How are issues and pull requests determined to be inactive?
 
-The app uses GitHub's [updated](https://git.io/fhRnE) search qualifier
-to determine inactivity. Any change to an issue or pull request
+The action uses GitHub's [updated](https://help.github.com/en/github/searching-for-information-on-github/searching-issues-and-pull-requests#search-by-when-an-issue-or-pull-request-was-created-or-last-updated)
+search qualifier to determine inactivity. Any change to an issue or pull request
 is considered an update, including comments, changing labels,
 applying or removing milestones, or pushing commits.
 
 An easy way to check and see which issues or pull requests will initially
 be locked is to add the `updated` search qualifier to either the issue
 or pull request page filter for your repository:
-`is:closed is:unlocked updated:<2016-12-20`.
-Adjust the date to be 365 days ago (or whatever you set for `daysUntilLock`)
+`is:closed is:unlocked updated:<2018-12-20`.
+Adjust the date to be 365 days ago (or whatever you set for `*-lock-inactive-days`)
 to see which issues or pull requests will be locked.
 
 ## Why are only some issues and pull requests processed?
 
-To avoid triggering abuse prevention mechanisms on GitHub, only 30 issues
-and pull requests will be handled per hour. If your repository has more
+To avoid triggering abuse prevention mechanisms on GitHub, only 50 issues
+and pull requests will be handled at once. If your repository has more
 than that, it will just take a few hours or days to process them all.
-
-## Deployment
-
-See [docs/deploy.md](docs/deploy.md) if you would like to run your own
-instance of this app.
 
 ## License
 
-Copyright (c) 2017-2019 Armin Sebastian
+Copyright (c) 2017-2020 Armin Sebastian
 
 This software is released under the terms of the MIT License.
 See the [LICENSE](LICENSE) file for further information.
