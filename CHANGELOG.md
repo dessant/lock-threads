@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://github.com/dessant/lock-threads/compare/v1.0.1...v2.0.0) (2020-02-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* The deployment method and configuration options have changed.
+
+### Features
+
+* move to GitHub Actions ([eb01523](https://github.com/dessant/lock-threads/commit/eb01523c2455360feaadea2ccf7db8a21532bef4))
+
 ### [1.0.1](https://github.com/dessant/lock-threads/compare/v1.0.0...v1.0.1) (2019-10-25)
 
 
