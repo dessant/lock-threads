@@ -100,7 +100,7 @@ const schema = Joi.object({
 
   issueLockReason: Joi.string()
     .valid('resolved', 'off-topic', 'too heated', 'spam', '')
-    .default(''),
+    .default('resolved'),
 
   prLockInactiveDays: Joi.number()
     .min(0)
@@ -164,7 +164,7 @@ const schema = Joi.object({
 
   prLockReason: Joi.string()
     .valid('resolved', 'off-topic', 'too heated', 'spam', '')
-    .default(''),
+    .default('resolved'),
 
   processOnly: extendedJoi
     .processOnly()
