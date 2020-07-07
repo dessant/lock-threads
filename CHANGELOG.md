@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.1](https://github.com/dessant/lock-threads/compare/v2.0.0...v2.0.1) (2020-07-07)
+
+
+### Bug Fixes
+
+* update dependencies ([a016bfb](https://github.com/dessant/lock-threads/commit/a016bfbb7a158eb14922b239899b5804b5075792)), closes [#17](https://github.com/dessant/lock-threads/issues/17)
+
 ## [2.0.0](https://github.com/dessant/lock-threads/compare/v1.0.1...v2.0.0) (2020-02-17)
 
 
