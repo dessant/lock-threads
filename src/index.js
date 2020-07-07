@@ -7,7 +7,7 @@ const schema = require('./schema');
 async function run() {
   try {
     const config = getConfig();
-    const client = new github.GitHub(config.githubToken);
+    const client = github.getOctokit(config.githubToken);
 
     const app = new App(config, client);
     await app.lockThreads();
