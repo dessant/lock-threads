@@ -11,6 +11,9 @@ inputs:
   issue-exclude-created-before:
     description: 'Do not lock issues created before a given timestamp, value must follow ISO 8601'
     default: ''
+  issue-include-labels:
+    description: 'Only lock issues with these labels, value must be a comma separated list of labels'
+    default: ''
   issue-exclude-labels:
     description: 'Do not lock issues with these labels, value must be a comma separated list of labels'
     default: ''
@@ -28,6 +31,9 @@ inputs:
     default: '365'
   pr-exclude-created-before:
     description: 'Do not lock pull requests created before a given timestamp, value must follow ISO 8601'
+    default: ''
+  pr-include-labels:
+    description: 'Only lock pull requests with these labels, value must be a comma separated list of labels'
     default: ''
   pr-exclude-labels:
     description: 'Do not lock pull requests with these labels, value must be a comma separated list of labels'

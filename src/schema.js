@@ -56,6 +56,24 @@ const schema = Joi.object({
     )
     .default(''),
 
+  issueIncludeLabels: Joi.alternatives()
+    .try(
+      extendedJoi
+        .stringList()
+        .items(
+          Joi.string()
+            .trim()
+            .max(50)
+        )
+        .min(1)
+        .max(30)
+        .unique(),
+      Joi.string()
+        .trim()
+        .valid('')
+    )
+    .default(''),
+
   issueExcludeLabels: Joi.alternatives()
     .try(
       extendedJoi
@@ -114,6 +132,24 @@ const schema = Joi.object({
         // .iso()
         .min('1970-01-01T00:00:00Z')
         .max('2970-12-31T23:59:59Z'),
+      Joi.string()
+        .trim()
+        .valid('')
+    )
+    .default(''),
+
+  prIncludeLabels: Joi.alternatives()
+    .try(
+      extendedJoi
+        .stringList()
+        .items(
+          Joi.string()
+            .trim()
+            .max(50)
+        )
+        .min(1)
+        .max(30)
+        .unique(),
       Joi.string()
         .trim()
         .valid('')
