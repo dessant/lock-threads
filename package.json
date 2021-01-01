@@ -14,10 +14,10 @@
   },
   "main": "src/index.js",
   "scripts": {
+    "build": "ncc build src/index.js -o dist",
     "update": "ncu --upgrade",
-    "package": "ncc build src/index.js -o dist",
-    "push": "git push --tags origin master",
-    "release": "standard-version"
+    "release": "standard-version",
+    "push": "git push --tags origin master"
   },
   "dependencies": {
     "@actions/core": "^1.2.6",
