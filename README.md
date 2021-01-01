@@ -95,7 +95,7 @@ The following workflow will search once an hour for closed issues
 and pull requests that can be locked.
 
 ```yaml
-name: 'Lock threads'
+name: 'Lock Threads'
 
 on:
   schedule:
@@ -127,7 +127,7 @@ and their default values. Any of the parameters can be omitted,
 except `github-token`.
 
 ```yaml
-name: 'Lock threads'
+name: 'Lock Threads'
 
 on:
   schedule:
@@ -225,7 +225,7 @@ than that, it will just take a few hours or days to process them all.
 
 ## License
 
-Copyright (c) 2017-2020 Armin Sebastian
+Copyright (c) 2017-2021 Armin Sebastian
 
 This software is released under the terms of the MIT License.
 See the [LICENSE](LICENSE) file for further information.

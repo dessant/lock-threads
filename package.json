@@ -14,22 +14,22 @@
   },
   "main": "src/index.js",
   "scripts": {
-    "update": "ncu --upgrade && npm install",
+    "update": "ncu --upgrade",
     "package": "ncc build src/index.js -o dist",
     "push": "git push --tags origin master",
     "release": "standard-version"
   },
   "dependencies": {
-    "@actions/core": "^1.2.4",
+    "@actions/core": "^1.2.6",
     "@actions/github": "^4.0.0",
-    "@hapi/joi": "^17.1.1",
+    "joi": "^17.3.0",
     "decamelize": "^4.0.0"
   },
   "devDependencies": {
-    "@zeit/ncc": "^0.22.3",
-    "npm-check-updates": "^7.0.1",
-    "prettier": "^2.0.5",
-    "standard-version": "^8.0.0"
+    "@vercel/ncc": "^0.26.1",
+    "npm-check-updates": "^10.2.5",
+    "prettier": "^2.2.1",
+    "standard-version": "^9.1.0"
   },
   "engines": {
     "node": ">=12.0.0"
