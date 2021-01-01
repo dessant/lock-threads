@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.3](https://github.com/dessant/lock-threads/compare/v2.0.2...v2.0.3) (2021-01-01)
+
+
+### Bug Fixes
+
+* update imported package name ([eba004b](https://github.com/dessant/lock-threads/commit/eba004bec39a410184db347eec5294ca57d38188))
+
 ### [2.0.2](https://github.com/dessant/lock-threads/compare/v2.0.1...v2.0.2) (2021-01-01)
 
 
