@@ -36,6 +36,10 @@ All parameters are optional, except `github-token`.
   - Do not lock issues created before a given timestamp,
     value must follow ISO 8601
   - Optional, defaults to `''`
+- **`issue-include-labels`**
+  - Only lock issues with these labels, value must be
+    a comma separated list of labels or `''` which means all closed issues
+  - Optional, defaults to `''`
 - **`issue-exclude-labels`**
   - Do not lock issues with these labels, value must be
     a comma separated list of labels or `''`
@@ -57,6 +61,10 @@ All parameters are optional, except `github-token`.
 - **`pr-exclude-created-before`**
   - Do not lock pull requests created before a given timestamp,
     value must follow ISO 8601
+  - Optional, defaults to `''`
+- **`pr-include-labels`**
+  - Only lock pull requests with these labels, value must
+    be a comma separated list of labels or `''` which means all closed pull requests
   - Optional, defaults to `''`
 - **`pr-exclude-labels`**
   - Do not lock pull requests with these labels, value must
@@ -142,12 +150,14 @@ jobs:
           github-token: ${{ github.token }}
           issue-lock-inactive-days: '365'
           issue-exclude-created-before: ''
+          issue-include-labels: ''
           issue-exclude-labels: ''
           issue-lock-labels: ''
           issue-lock-comment: ''
           issue-lock-reason: 'resolved'
           pr-lock-inactive-days: '365'
           pr-exclude-created-before: ''
+          pr-include-labels: ''
           pr-exclude-labels: ''
           pr-lock-labels: ''
           pr-lock-comment: ''

@@ -89,6 +89,14 @@ class App {
     );
     let query = `repo:${owner}/${repo} updated:<${timestamp} is:closed is:unlocked`;
 
+    const includeLabels = this.config[type + 'IncludeLabels'];
+    if (includeLabels) {
+      const queryPart = includeLabels
+        .map(label => `label:"${label}"`)
+        .join(' ');
+      query += ` ${queryPart}`;
+    }
+
     const excludeLabels = this.config[type + 'ExcludeLabels'];
     if (excludeLabels) {
       const queryPart = excludeLabels
