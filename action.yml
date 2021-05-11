@@ -4,7 +4,8 @@ author: 'Armin Sebastian'
 inputs:
   github-token:
     description: 'GitHub access token'
-    required: true
+    required: false
+    default: ${{ github.token }}
   issue-lock-inactive-days:
     description: 'Number of days of inactivity before a closed issue is locked'
     default: '365'
