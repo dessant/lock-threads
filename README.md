@@ -28,7 +28,7 @@ All parameters are optional, except `github-token`.
 
 - **`github-token`**
   - GitHub access token, value must be `${{ github.token }}`
-  - Required
+  - Optional, defaults to `github.token`
 - **`issue-lock-inactive-days`**
   - Number of days of inactivity before a closed issue is locked
   - Optional, defaults to `365`
@@ -106,8 +106,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: dessant/lock-threads@v2
-        with:
-          github-token: ${{ github.token }}
 ```
 
 Edit the workflow after the initial backlog of issues and pull requests
@@ -139,7 +137,6 @@ jobs:
     steps:
       - uses: dessant/lock-threads@v2
         with:
-          github-token: ${{ github.token }}
           issue-lock-inactive-days: '365'
           issue-exclude-created-before: ''
           issue-exclude-labels: ''
@@ -164,7 +161,6 @@ or those with the `upstream` or `help-wanted` labels applied.
     steps:
       - uses: dessant/lock-threads@v2
         with:
-          github-token: ${{ github.token }}
           issue-exclude-created-before: '2018-01-01T00:00:00Z'
           issue-exclude-labels: 'upstream, help-wanted'
           process-only: 'issues'
@@ -177,7 +173,6 @@ with the `wip` label applied.
     steps:
       - uses: dessant/lock-threads@v2
         with:
-          github-token: ${{ github.token }}
           pr-exclude-labels: 'wip'
           process-only: 'prs'
 ```
@@ -191,7 +186,6 @@ and apply the `outdated` label to issues.
     steps:
       - uses: dessant/lock-threads@v2
         with:
-          github-token: ${{ github.token }}
           issue-lock-labels: 'outdated'
           issue-lock-comment: >
             This issue has been automatically locked since there
