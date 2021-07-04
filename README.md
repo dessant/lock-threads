@@ -3,9 +3,6 @@
 Lock Threads is a GitHub Action that locks closed issues
 and pull requests after a period of inactivity.
 
-> The legacy version of this project can be found
-[here](https://github.com/dessant/lock-threads-app).
-
 ![](assets/screenshot.png)
 
 ## Supporting the Project
@@ -25,12 +22,12 @@ use one of the [example workflows](#examples) to get started.
 ### Inputs
 
 <!-- prettier-ignore -->
-The action can be configured using [input parameters](https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idstepswith).
-All parameters are optional, except `github-token`.
+The action can be configured using [input parameters](https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idstepswith).
 
 - **`github-token`**
-  - GitHub access token, value must be `${{ github.token }}`
-  - Required
+  - GitHub access token, value must be `${{ github.token }}` or an encrypted
+    secret that contains a [personal access token](#using-a-personal-access-token)
+  - Optional, defaults to `${{ github.token }}`
 - **`issue-lock-inactive-days`**
   - Number of days of inactivity before a closed issue is locked
   - Optional, defaults to `365`
@@ -114,8 +111,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: dessant/lock-threads@v2
-        with:
-          github-token: ${{ github.token }}
 ```
 
 Edit the workflow after the initial backlog of issues and pull requests
@@ -132,8 +127,7 @@ on:
 ### Available input parameters
 
 This workflow declares all the available input parameters of the action
-and their default values. Any of the parameters can be omitted,
-except `github-token`.
+and their default values. Any of the parameters can be omitted.
 
 <!-- prettier-ignore -->
 ```yaml
@@ -179,7 +173,6 @@ or those with the `upstream` or `help-wanted` labels applied.
     steps:
       - uses: dessant/lock-threads@v2
         with:
-          github-token: ${{ github.token }}
           issue-exclude-created-before: '2018-01-01T00:00:00Z'
           issue-exclude-labels: 'upstream, help-wanted'
           process-only: 'issues'
@@ -193,7 +186,6 @@ with the `wip` label applied.
     steps:
       - uses: dessant/lock-threads@v2
         with:
-          github-token: ${{ github.token }}
           pr-exclude-labels: 'wip'
           process-only: 'prs'
 ```
@@ -208,7 +200,6 @@ and apply the `outdated` label to issues.
     steps:
       - uses: dessant/lock-threads@v2
         with:
-          github-token: ${{ github.token }}
           issue-lock-labels: 'outdated'
           issue-lock-comment: >
             This issue has been automatically locked since there
@@ -218,6 +209,26 @@ and apply the `outdated` label to issues.
             This pull request has been automatically locked since there
             has not been any recent activity after it was closed.
             Please open a new issue for related bugs.
+```
+
+### Using a personal access token
+
+The action uses an installation access token by default to interact with GitHub.
+You may also authenticate with a personal access token to perform actions
+as a GitHub user instead of the `github-actions` app.
+
+Create a [personal access token](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token)
+with the `repo` or `public_repo` scopes enabled, and add the token as an
+[encrypted secret](https://docs.github.com/en/actions/reference/encrypted-secrets#creating-encrypted-secrets-for-a-repository)
+for the repository or organization, then provide the action with the secret
+using the `github-token` input parameter.
+
+<!-- prettier-ignore -->
+```yaml
+    steps:
+      - uses: dessant/lock-threads@v2
+        with:
+          github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 ```
 
 ## How are issues and pull requests determined to be inactive?
