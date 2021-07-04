@@ -23,6 +23,8 @@ Create a `lock.yml` workflow file in the `.github/workflows` directory,
 use one of the [example workflows](#examples) to get started.
 
 ### Inputs
+
+<!-- prettier-ignore -->
 The action can be configured using [input parameters](https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idstepswith).
 All parameters are optional, except `github-token`.
 
@@ -80,6 +82,7 @@ All parameters are optional, except `github-token`.
 
 ### Outputs
 
+<!-- prettier-ignore -->
 - **`issues`**
   - Issues that have been locked, value is a JSON string in the form
     of `[{"owner": "actions", "repo": "toolkit", "issue_number": 1}]`
@@ -94,6 +97,7 @@ All parameters are optional, except `github-token`.
 The following workflow will search once an hour for closed issues
 and pull requests that can be locked.
 
+<!-- prettier-ignore -->
 ```yaml
 name: 'Lock Threads'
 
@@ -101,8 +105,12 @@ on:
   schedule:
     - cron: '0 * * * *'
 
+permissions:
+  issues: write
+  pull-requests: write
+
 jobs:
-  lock:
+  action:
     runs-on: ubuntu-latest
     steps:
       - uses: dessant/lock-threads@v2
@@ -114,6 +122,7 @@ Edit the workflow after the initial backlog of issues and pull requests
 has been processed to reduce the frequency of scheduled runs.
 Running the workflow only once a day helps reduce resource usage.
 
+<!-- prettier-ignore -->
 ```yaml
 on:
   schedule:
@@ -126,6 +135,7 @@ This workflow declares all the available input parameters of the action
 and their default values. Any of the parameters can be omitted,
 except `github-token`.
 
+<!-- prettier-ignore -->
 ```yaml
 name: 'Lock Threads'
 
@@ -133,8 +143,12 @@ on:
   schedule:
     - cron: '0 0 * * *'
 
+permissions:
+  issues: write
+  pull-requests: write
+
 jobs:
-  lock:
+  action:
     runs-on: ubuntu-latest
     steps:
       - uses: dessant/lock-threads@v2
@@ -160,6 +174,7 @@ jobs:
 This step will lock only issues, and exclude issues created before 2018,
 or those with the `upstream` or `help-wanted` labels applied.
 
+<!-- prettier-ignore -->
 ```yaml
     steps:
       - uses: dessant/lock-threads@v2
@@ -173,6 +188,7 @@ or those with the `upstream` or `help-wanted` labels applied.
 This step will lock only pull requests, and exclude those
 with the `wip` label applied.
 
+<!-- prettier-ignore -->
 ```yaml
     steps:
       - uses: dessant/lock-threads@v2
@@ -187,6 +203,7 @@ with the `wip` label applied.
 This step will post a comment on issues and pull requests before locking them,
 and apply the `outdated` label to issues.
 
+<!-- prettier-ignore -->
 ```yaml
     steps:
       - uses: dessant/lock-threads@v2
