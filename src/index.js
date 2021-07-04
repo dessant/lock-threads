@@ -1,13 +1,12 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
-const decamelize = require('decamelize');
 
 const schema = require('./schema');
 
 async function run() {
   try {
     const config = getConfig();
-    const client = github.getOctokit(config.githubToken);
+    const client = github.getOctokit(config['github-token']);
 
     const app = new App(config, client);
     await app.lockThreads();
@@ -23,7 +22,7 @@ class App {
   }
 
   async lockThreads() {
-    const type = this.config.processOnly;
+    const type = this.config['process-only'];
     const threadTypes = type ? [type] : ['issue', 'pr'];
 
     for (const item of threadTypes) {
@@ -35,9 +34,9 @@ class App {
 
   async lock(type) {
     const repo = github.context.repo;
-    const lockLabels = this.config[type + 'LockLabels'];
-    const lockComment = this.config[type + 'LockComment'];
-    const lockReason = this.config[type + 'LockReason'];
+    const lockLabels = this.config[`${type}-lock-labels`];
+    const lockComment = this.config[`${type}-lock-comment`];
+    const lockReason = this.config[`${type}-lock-reason`];
 
     const threads = [];
 
@@ -85,11 +84,11 @@ class App {
   async search(type) {
     const {owner, repo} = github.context.repo;
     const timestamp = this.getUpdatedTimestamp(
-      this.config[type + 'LockInactiveDays']
+      this.config[`${type}-lock-inactive-days`]
     );
     let query = `repo:${owner}/${repo} updated:<${timestamp} is:closed is:unlocked`;
 
-    const excludeLabels = this.config[type + 'ExcludeLabels'];
+    const excludeLabels = this.config[`${type}-exclude-labels`];
     if (excludeLabels) {
       const queryPart = excludeLabels
         .map(label => `-label:"${label}"`)
@@ -97,7 +96,7 @@ class App {
       query += ` ${queryPart}`;
     }
 
-    const excludeCreatedBefore = this.config[type + 'ExcludeCreatedBefore'];
+    const excludeCreatedBefore = this.config[`${type}-exclude-created-before`];
     if (excludeCreatedBefore) {
       query += ` created:>${this.getISOTimestamp(excludeCreatedBefore)}`;
     }
@@ -135,10 +134,7 @@ class App {
 
 function getConfig() {
   const input = Object.fromEntries(
-    Object.keys(schema.describe().keys).map(item => [
-      item,
-      core.getInput(decamelize(item, '-'))
-    ])
+    Object.keys(schema.describe().keys).map(item => [item, core.getInput(item)])
   );
 
   const {error, value} = schema.validate(input, {abortEarly: false});

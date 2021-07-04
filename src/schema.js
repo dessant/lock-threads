@@ -34,17 +34,17 @@ const extendedJoi = Joi.extend({
 });
 
 const schema = Joi.object({
-  githubToken: Joi.string()
+  'github-token': Joi.string()
     .trim()
     .max(100),
 
-  issueLockInactiveDays: Joi.number()
+  'issue-lock-inactive-days': Joi.number()
     .min(0)
     .max(3650)
     .precision(9)
     .default(365),
 
-  issueExcludeCreatedBefore: Joi.alternatives()
+  'issue-exclude-created-before': Joi.alternatives()
     .try(
       Joi.date()
         // .iso()
@@ -56,7 +56,7 @@ const schema = Joi.object({
     )
     .default(''),
 
-  issueExcludeLabels: Joi.alternatives()
+  'issue-exclude-labels': Joi.alternatives()
     .try(
       extendedJoi
         .stringList()
@@ -74,7 +74,7 @@ const schema = Joi.object({
     )
     .default(''),
 
-  issueLockLabels: Joi.alternatives()
+  'issue-lock-labels': Joi.alternatives()
     .try(
       extendedJoi
         .stringList()
@@ -92,23 +92,23 @@ const schema = Joi.object({
     )
     .default(''),
 
-  issueLockComment: Joi.string()
+  'issue-lock-comment': Joi.string()
     .trim()
     .max(10000)
     .allow('')
     .default(''),
 
-  issueLockReason: Joi.string()
+  'issue-lock-reason': Joi.string()
     .valid('resolved', 'off-topic', 'too heated', 'spam', '')
     .default('resolved'),
 
-  prLockInactiveDays: Joi.number()
+  'pr-lock-inactive-days': Joi.number()
     .min(0)
     .max(3650)
     .precision(9)
     .default(365),
 
-  prExcludeCreatedBefore: Joi.alternatives()
+  'pr-exclude-created-before': Joi.alternatives()
     .try(
       Joi.date()
         // .iso()
@@ -120,7 +120,7 @@ const schema = Joi.object({
     )
     .default(''),
 
-  prExcludeLabels: Joi.alternatives()
+  'pr-exclude-labels': Joi.alternatives()
     .try(
       extendedJoi
         .stringList()
@@ -138,7 +138,7 @@ const schema = Joi.object({
     )
     .default(''),
 
-  prLockLabels: Joi.alternatives()
+  'pr-lock-labels': Joi.alternatives()
     .try(
       extendedJoi
         .stringList()
@@ -156,17 +156,17 @@ const schema = Joi.object({
     )
     .default(''),
 
-  prLockComment: Joi.string()
+  'pr-lock-comment': Joi.string()
     .trim()
     .max(10000)
     .allow('')
     .default(''),
 
-  prLockReason: Joi.string()
+  'pr-lock-reason': Joi.string()
     .valid('resolved', 'off-topic', 'too heated', 'spam', '')
     .default('resolved'),
 
-  processOnly: extendedJoi
+  'process-only': extendedJoi
     .processOnly()
     .valid('issue', 'pr', '')
     .default('')

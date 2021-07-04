@@ -22,8 +22,7 @@
   "dependencies": {
     "@actions/core": "^1.2.6",
     "@actions/github": "^4.0.0",
-    "joi": "^17.3.0",
-    "decamelize": "^4.0.0"
+    "joi": "^17.3.0"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.26.1",
