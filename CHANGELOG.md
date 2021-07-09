@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.0](https://github.com/dessant/lock-threads/compare/v2.0.3...v2.1.0) (2021-07-09)
+
+
+### Features
+
+* make github-token optional and document the use of personal access tokens ([3eba4fe](https://github.com/dessant/lock-threads/commit/3eba4feee52d51242057af33eb6a7f0a9969c1f9))
+
+
+### Bug Fixes
+
+* declare required permissions ([877b357](https://github.com/dessant/lock-threads/commit/877b357328e98d932378cfc33f428d17a9a7409d))
+
 ### [2.0.3](https://github.com/dessant/lock-threads/compare/v2.0.2...v2.0.3) (2021-01-01)
 
 
