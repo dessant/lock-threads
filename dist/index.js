@@ -24531,7 +24531,7 @@ class App {
 
       if (lockComment) {
         core.debug(`Commenting (${type}: ${issue.issue_number})`);
-        await this.client.issues.createComment({
+        await this.client.rest.issues.createComment({
           ...issue,
           body: lockComment
         });
@@ -24539,7 +24539,7 @@ class App {
 
       if (lockLabels) {
         core.debug(`Labeling (${type}: ${issue.issue_number})`);
-        await this.client.issues.addLabels({
+        await this.client.rest.issues.addLabels({
           ...issue,
           labels: lockLabels
         });
@@ -24558,7 +24558,7 @@ class App {
       } else {
         params = issue;
       }
-      await this.client.issues.lock(params);
+      await this.client.rest.issues.lock(params);
 
       threads.push(issue);
     }
@@ -24594,7 +24594,7 @@ class App {
 
     core.debug(`Searching (${type}s)`);
     const results = (
-      await this.client.search.issuesAndPullRequests({
+      await this.client.rest.search.issuesAndPullRequests({
         q: query,
         sort: 'updated',
         order: 'desc',
