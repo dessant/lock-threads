@@ -34,9 +34,7 @@ const extendedJoi = Joi.extend({
 });
 
 const schema = Joi.object({
-  'github-token': Joi.string()
-    .trim()
-    .max(100),
+  'github-token': Joi.string().trim().max(100),
 
   'issue-lock-inactive-days': Joi.number()
     .min(0)
@@ -50,9 +48,7 @@ const schema = Joi.object({
         // .iso()
         .min('1970-01-01T00:00:00Z')
         .max('2970-12-31T23:59:59Z'),
-      Joi.string()
-        .trim()
-        .valid('')
+      Joi.string().trim().valid('')
     )
     .default(''),
 
@@ -60,17 +56,11 @@ const schema = Joi.object({
     .try(
       extendedJoi
         .stringList()
-        .items(
-          Joi.string()
-            .trim()
-            .max(50)
-        )
+        .items(Joi.string().trim().max(50))
         .min(1)
         .max(30)
         .unique(),
-      Joi.string()
-        .trim()
-        .valid('')
+      Joi.string().trim().valid('')
     )
     .default(''),
 
@@ -78,25 +68,15 @@ const schema = Joi.object({
     .try(
       extendedJoi
         .stringList()
-        .items(
-          Joi.string()
-            .trim()
-            .max(50)
-        )
+        .items(Joi.string().trim().max(50))
         .min(1)
         .max(30)
         .unique(),
-      Joi.string()
-        .trim()
-        .valid('')
+      Joi.string().trim().valid('')
     )
     .default(''),
 
-  'issue-lock-comment': Joi.string()
-    .trim()
-    .max(10000)
-    .allow('')
-    .default(''),
+  'issue-lock-comment': Joi.string().trim().max(10000).allow('').default(''),
 
   'issue-lock-reason': Joi.string()
     .valid('resolved', 'off-topic', 'too heated', 'spam', '')
@@ -114,9 +94,7 @@ const schema = Joi.object({
         // .iso()
         .min('1970-01-01T00:00:00Z')
         .max('2970-12-31T23:59:59Z'),
-      Joi.string()
-        .trim()
-        .valid('')
+      Joi.string().trim().valid('')
     )
     .default(''),
 
@@ -124,17 +102,11 @@ const schema = Joi.object({
     .try(
       extendedJoi
         .stringList()
-        .items(
-          Joi.string()
-            .trim()
-            .max(50)
-        )
+        .items(Joi.string().trim().max(50))
         .min(1)
         .max(30)
         .unique(),
-      Joi.string()
-        .trim()
-        .valid('')
+      Joi.string().trim().valid('')
     )
     .default(''),
 
@@ -142,34 +114,21 @@ const schema = Joi.object({
     .try(
       extendedJoi
         .stringList()
-        .items(
-          Joi.string()
-            .trim()
-            .max(50)
-        )
+        .items(Joi.string().trim().max(50))
         .min(1)
         .max(30)
         .unique(),
-      Joi.string()
-        .trim()
-        .valid('')
+      Joi.string().trim().valid('')
     )
     .default(''),
 
-  'pr-lock-comment': Joi.string()
-    .trim()
-    .max(10000)
-    .allow('')
-    .default(''),
+  'pr-lock-comment': Joi.string().trim().max(10000).allow('').default(''),
 
   'pr-lock-reason': Joi.string()
     .valid('resolved', 'off-topic', 'too heated', 'spam', '')
     .default('resolved'),
 
-  'process-only': extendedJoi
-    .processOnly()
-    .valid('issue', 'pr', '')
-    .default('')
+  'process-only': extendedJoi.processOnly().valid('issue', 'pr', '').default('')
 });
 
 module.exports = schema;
