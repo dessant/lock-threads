@@ -46,10 +46,16 @@ class App {
 
       if (lockComment) {
         core.debug(`Commenting (${type}: ${issue.issue_number})`);
-        await this.client.rest.issues.createComment({
-          ...issue,
-          body: lockComment
-        });
+        try {
+          await this.client.rest.issues.createComment({
+            ...issue,
+            body: lockComment
+          });
+        } catch (err) {
+          if (!/cannot be modified.*discussion/i.test(err.message)) {
+            throw err;
+          }
+        }
       }
 
       if (lockLabels) {
