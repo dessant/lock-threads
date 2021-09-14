@@ -101,10 +101,14 @@ name: 'Lock Threads'
 on:
   schedule:
     - cron: '0 * * * *'
+  workflow_dispatch:
 
 permissions:
   issues: write
   pull-requests: write
+
+concurrency:
+  group: lock
 
 jobs:
   action:
@@ -136,10 +140,14 @@ name: 'Lock Threads'
 on:
   schedule:
     - cron: '0 0 * * *'
+  workflow_dispatch:
 
 permissions:
   issues: write
   pull-requests: write
+
+concurrency:
+  group: lock
 
 jobs:
   action:
