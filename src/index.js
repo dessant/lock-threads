@@ -23,19 +23,31 @@ class App {
 
   async lockThreads() {
     const type = this.config['process-only'];
-    const threadTypes = type ? [type] : ['issue', 'pr'];
+    const logOutput = this.config['log-output'];
 
+    const threadTypes = type ? [type] : ['issue', 'pr'];
     for (const item of threadTypes) {
       const threads = await this.lock(item);
+
       core.debug(`Setting output (${item}s)`);
-      core.setOutput(`${item}s`, threads.length ? JSON.stringify(threads) : '');
+      if (threads.length) {
+        core.setOutput(`${item}s`, JSON.stringify(threads));
+
+        if (logOutput) {
+          core.info(`Output (${item}s):`);
+          core.info(JSON.stringify(threads, null, 2));
+        }
+      } else {
+        core.setOutput(`${item}s`, '');
+      }
     }
   }
 
   async lock(type) {
     const repo = github.context.repo;
-    const lockLabels = this.config[`${type}-lock-labels`];
-    const lockComment = this.config[`${type}-lock-comment`];
+    const addLabels = this.config[`add-${type}-labels`];
+    const removeLabels = this.config[`remove-${type}-labels`];
+    const comment = this.config[`${type}-comment`];
     const lockReason = this.config[`${type}-lock-reason`];
 
     const threads = [];
@@ -44,12 +56,12 @@ class App {
     for (const result of results) {
       const issue = {...repo, issue_number: result.number};
 
-      if (lockComment) {
+      if (comment) {
         core.debug(`Commenting (${type}: ${issue.issue_number})`);
         try {
           await this.client.rest.issues.createComment({
             ...issue,
-            body: lockComment
+            body: comment
           });
         } catch (err) {
           if (!/cannot be modified.*discussion/i.test(err.message)) {
@@ -58,12 +70,39 @@ class App {
         }
       }
 
-      if (lockLabels) {
-        core.debug(`Labeling (${type}: ${issue.issue_number})`);
-        await this.client.rest.issues.addLabels({
-          ...issue,
-          labels: lockLabels
-        });
+      if (addLabels || removeLabels) {
+        const {data: issueData} = await this.client.rest.issues.get({...issue});
+
+        if (addLabels) {
+          const currentLabels = issueData.labels.map(label => label.name);
+          const newLabels = addLabels.filter(
+            label => !currentLabels.includes(label)
+          );
+
+          if (newLabels.length) {
+            core.debug(`Labeling (${type}: ${issue.issue_number})`);
+            await this.client.rest.issues.addLabels({
+              ...issue,
+              labels: newLabels
+            });
+          }
+        }
+
+        if (removeLabels) {
+          const currentLabels = issueData.labels.map(label => label.name);
+          const matchingLabels = currentLabels.filter(label =>
+            removeLabels.includes(label)
+          );
+          if (matchingLabels.length) {
+            core.debug(`Unlabeling (${type}: ${issue.issue_number})`);
+            for (const label of matchingLabels) {
+              await this.client.rest.issues.removeLabel({
+                ...issue,
+                name: label
+              });
+            }
+          }
+        }
       }
 
       core.debug(`Locking (${type}: ${issue.issue_number})`);
@@ -89,22 +128,41 @@ class App {
 
   async search(type) {
     const {owner, repo} = github.context.repo;
-    const timestamp = this.getUpdatedTimestamp(
-      this.config[`${type}-lock-inactive-days`]
+    const updatedTime = this.getUpdatedTimestamp(
+      this.config[`${type}-inactive-days`]
     );
-    let query = `repo:${owner}/${repo} updated:<${timestamp} is:closed is:unlocked`;
+    let query = `repo:${owner}/${repo} updated:<${updatedTime} is:closed is:unlocked`;
 
-    const excludeLabels = this.config[`${type}-exclude-labels`];
-    if (excludeLabels) {
-      const queryPart = excludeLabels
-        .map(label => `-label:"${label}"`)
-        .join(' ');
-      query += ` ${queryPart}`;
+    const includeAnyLabels = this.config[`include-any-${type}-labels`];
+    const includeAllLabels = this.config[`include-all-${type}-labels`];
+
+    if (includeAllLabels) {
+      query += ` ${includeAllLabels
+        .map(label => `label:"${label}"`)
+        .join(' ')}`;
+    } else if (includeAnyLabels) {
+      query += ` label:${includeAnyLabels.join(',')}`;
     }
 
-    const excludeCreatedBefore = this.config[`${type}-exclude-created-before`];
-    if (excludeCreatedBefore) {
-      query += ` created:>${this.getISOTimestamp(excludeCreatedBefore)}`;
+    const excludeAnyLabels = this.config[`exclude-any-${type}-labels`];
+    if (excludeAnyLabels) {
+      query += ` -label:${excludeAnyLabels.join(',')}`;
+    }
+
+    const excludeCreatedQuery = this.getFilterByDateQuery({
+      type,
+      qualifier: 'created'
+    });
+    if (excludeCreatedQuery) {
+      query += ` ${excludeCreatedQuery}`;
+    }
+
+    const excludeClosedQuery = this.getFilterByDateQuery({
+      type,
+      qualifier: 'closed'
+    });
+    if (excludeClosedQuery) {
+      query += ` ${excludeClosedQuery}`;
     }
 
     if (type === 'issue') {
@@ -125,6 +183,26 @@ class App {
 
     // results may include locked issues
     return results.filter(issue => !issue.locked);
+  }
+
+  getFilterByDateQuery({type, qualifier = 'created'} = {}) {
+    const beforeDate = this.config[`exclude-${type}-${qualifier}-before`];
+    const afterDate = this.config[`exclude-${type}-${qualifier}-after`];
+    const betweenDates = this.config[`exclude-${type}-${qualifier}-between`];
+
+    if (betweenDates) {
+      return `-${qualifier}:${betweenDates
+        .map(date => this.getISOTimestamp(date))
+        .join('..')}`;
+    } else if (beforeDate && afterDate) {
+      return `${qualifier}:${this.getISOTimestamp(
+        beforeDate
+      )}..${this.getISOTimestamp(afterDate)}`;
+    } else if (beforeDate) {
+      return `${qualifier}:>${this.getISOTimestamp(beforeDate)}`;
+    } else if (afterDate) {
+      return `${qualifier}:<${this.getISOTimestamp(afterDate)}`;
+    }
   }
 
   getUpdatedTimestamp(days) {

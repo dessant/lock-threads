@@ -5,37 +5,85 @@ inputs:
   github-token:
     description: 'GitHub access token'
     default: '${{ github.token }}'
-  issue-lock-inactive-days:
+  issue-inactive-days:
     description: 'Number of days of inactivity before a closed issue is locked'
     default: '365'
-  issue-exclude-created-before:
-    description: 'Do not lock issues created before a given timestamp, value must follow ISO 8601'
+  exclude-issue-created-before:
+    description: 'Do not lock issues created before a given date, value must follow ISO 8601'
     default: ''
-  issue-exclude-labels:
-    description: 'Do not lock issues with these labels, value must be a comma separated list of labels'
+  exclude-issue-created-after:
+    description: 'Do not lock issues created after a given date, value must follow ISO 8601'
     default: ''
-  issue-lock-labels:
+  exclude-issue-created-between:
+    description: 'Do not lock issues created in a given time interval, value must follow ISO 8601'
+    default: ''
+  exclude-issue-closed-before:
+    description: 'Do not lock issues closed before a given date, value must follow ISO 8601'
+    default: ''
+  exclude-issue-closed-after:
+    description: 'Do not lock issues closed after a given date, value must follow ISO 8601'
+    default: ''
+  exclude-issue-closed-between:
+    description: 'Do not lock issues closed in a given time interval, value must follow ISO 8601'
+    default: ''
+  include-any-issue-labels:
+    description: 'Only lock issues with any of these labels, value must be a comma separated list of labels'
+    default: ''
+  include-all-issue-labels:
+    description: 'Only lock issues with all these labels, value must be a comma separated list of labels'
+    default: ''
+  exclude-any-issue-labels:
+    description: 'Do not lock issues with any of these labels, value must be a comma separated list of labels'
+    default: ''
+  add-issue-labels:
     description: 'Labels to add before locking an issue, value must be a comma separated list of labels'
     default: ''
-  issue-lock-comment:
+  remove-issue-labels:
+    description: 'Labels to remove before locking an issue, value must be a comma separated list of labels'
+    default: ''
+  issue-comment:
     description: 'Comment to post before locking an issue'
     default: ''
   issue-lock-reason:
     description: 'Reason for locking an issue, value must be one of `resolved`, `off-topic`, `too heated` or `spam`'
     default: 'resolved'
-  pr-lock-inactive-days:
+  pr-inactive-days:
     description: 'Number of days of inactivity before a closed pull request is locked'
     default: '365'
-  pr-exclude-created-before:
-    description: 'Do not lock pull requests created before a given timestamp, value must follow ISO 8601'
+  exclude-pr-created-before:
+    description: 'Do not lock pull requests created before a given date, value must follow ISO 8601'
     default: ''
-  pr-exclude-labels:
-    description: 'Do not lock pull requests with these labels, value must be a comma separated list of labels'
+  exclude-pr-created-after:
+    description: 'Do not lock pull requests created after a given date, value must follow ISO 8601'
     default: ''
-  pr-lock-labels:
+  exclude-pr-created-between:
+    description: 'Do not lock pull requests created in a given time interval, value must follow ISO 8601'
+    default: ''
+  exclude-pr-closed-before:
+    description: 'Do not lock pull requests closed before a given date, value must follow ISO 8601'
+    default: ''
+  exclude-pr-closed-after:
+    description: 'Do not lock pull requests closed after a given date, value must follow ISO 8601'
+    default: ''
+  exclude-pr-closed-between:
+    description: 'Do not lock pull requests closed in a given time interval, value must follow ISO 8601'
+    default: ''
+  include-any-pr-labels:
+    description: 'Only lock pull requests with any of these labels, value must be a comma separated list of labels'
+    default: ''
+  include-all-pr-labels:
+    description: 'Only lock pull requests with all these labels, value must be a comma separated list of labels'
+    default: ''
+  exclude-any-pr-labels:
+    description: 'Do not lock pull requests with any of these labels, value must be a comma separated list of labels'
+    default: ''
+  add-pr-labels:
     description: 'Labels to add before locking a pull request, value must be a comma separated list of labels'
     default: ''
-  pr-lock-comment:
+  remove-pr-labels:
+    description: 'Labels to remove before locking a pull request, value must be a comma separated list of labels'
+    default: ''
+  pr-comment:
     description: 'Comment to post before locking a pull request'
     default: ''
   pr-lock-reason:
@@ -44,6 +92,9 @@ inputs:
   process-only:
     description: 'Limit locking to only issues or pull requests, value must be one of `issues` or `prs`'
     default: ''
+  log-output:
+    description: 'Log output parameters, value must be either `true` or `false`'
+    default: false
 outputs:
   issues:
     description: 'Issues that have been locked, value is a JSON string'
