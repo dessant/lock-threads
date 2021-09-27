@@ -134,7 +134,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getState = exports.saveState = exports.group = exports.endGroup = exports.startGroup = exports.info = exports.warning = exports.error = exports.debug = exports.isDebug = exports.setFailed = exports.setCommandEcho = exports.setOutput = exports.getBooleanInput = exports.getMultilineInput = exports.getInput = exports.addPath = exports.setSecret = exports.exportVariable = exports.ExitCode = void 0;
+exports.getState = exports.saveState = exports.group = exports.endGroup = exports.startGroup = exports.info = exports.notice = exports.warning = exports.error = exports.debug = exports.isDebug = exports.setFailed = exports.setCommandEcho = exports.setOutput = exports.getBooleanInput = exports.getMultilineInput = exports.getInput = exports.addPath = exports.setSecret = exports.exportVariable = exports.ExitCode = void 0;
 const command_1 = __nccwpck_require__(7351);
 const file_command_1 = __nccwpck_require__(717);
 const utils_1 = __nccwpck_require__(5278);
@@ -312,19 +312,30 @@ exports.debug = debug;
 /**
  * Adds an error issue
  * @param message error issue message. Errors will be converted to string via toString()
+ * @param properties optional properties to add to the annotation.
  */
-function error(message) {
-    command_1.issue('error', message instanceof Error ? message.toString() : message);
+function error(message, properties = {}) {
+    command_1.issueCommand('error', utils_1.toCommandProperties(properties), message instanceof Error ? message.toString() : message);
 }
 exports.error = error;
 /**
- * Adds an warning issue
+ * Adds a warning issue
  * @param message warning issue message. Errors will be converted to string via toString()
+ * @param properties optional properties to add to the annotation.
  */
-function warning(message) {
-    command_1.issue('warning', message instanceof Error ? message.toString() : message);
+function warning(message, properties = {}) {
+    command_1.issueCommand('warning', utils_1.toCommandProperties(properties), message instanceof Error ? message.toString() : message);
 }
 exports.warning = warning;
+/**
+ * Adds a notice issue
+ * @param message notice issue message. Errors will be converted to string via toString()
+ * @param properties optional properties to add to the annotation.
+ */
+function notice(message, properties = {}) {
+    command_1.issueCommand('notice', utils_1.toCommandProperties(properties), message instanceof Error ? message.toString() : message);
+}
+exports.notice = notice;
 /**
  * Writes info to log with console.log.
  * @param message info message
@@ -458,7 +469,7 @@ exports.issueCommand = issueCommand;
 // We use any as a valid input type
 /* eslint-disable @typescript-eslint/no-explicit-any */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.toCommandValue = void 0;
+exports.toCommandProperties = exports.toCommandValue = void 0;
 /**
  * Sanitizes an input into a string so it can be passed into issueCommand safely
  * @param input input to sanitize into a string
@@ -473,6 +484,25 @@ function toCommandValue(input) {
     return JSON.stringify(input);
 }
 exports.toCommandValue = toCommandValue;
+/**
+ *
+ * @param annotationProperties
+ * @returns The command properties to send with the actual annotation command
+ * See IssueCommandProperties: https://github.com/actions/runner/blob/main/src/Runner.Worker/ActionCommandManager.cs#L646
+ */
+function toCommandProperties(annotationProperties) {
+    if (!Object.keys(annotationProperties).length) {
+        return {};
+    }
+    return {
+        title: annotationProperties.title,
+        line: annotationProperties.startLine,
+        endLine: annotationProperties.endLine,
+        col: annotationProperties.startColumn,
+        endColumn: annotationProperties.endColumn
+    };
+}
+exports.toCommandProperties = toCommandProperties;
 //# sourceMappingURL=utils.js.map
 
 /***/ }),
@@ -17366,7 +17396,7 @@ module.exports = Any.extend({
                         continue;
                     }
 
-                    if (schema.$_terms._inclusions.length &&
+                    if ((schema.$_terms._inclusions.length || schema.$_terms._requireds.length) &&
                         !isValid) {
 
                         if (stripUnknown) {
@@ -24075,135 +24105,181 @@ function wrappy (fn, cb) {
 
 const Joi = __nccwpck_require__(918);
 
-const extendedJoi = Joi.extend({
-  type: 'stringList',
-  base: Joi.array(),
-  coerce: {
-    from: 'string',
-    method(value) {
-      value = value.trim();
-      if (value) {
-        value = value
-          .split(',')
-          .map(item => item.trim())
-          .filter(Boolean);
-      }
+const extendedJoi = Joi.extend(joi => {
+  return {
+    type: 'stringList',
+    base: joi.array(),
+    coerce: {
+      from: 'string',
+      method(value, helpers) {
+        value = value.trim();
+        if (value) {
+          value = value
+            .split(',')
+            .map(item => item.trim())
+            .filter(Boolean);
+        }
 
-      return {value};
-    }
-  }
-}).extend({
-  type: 'processOnly',
-  base: Joi.string(),
-  coerce: {
-    from: 'string',
-    method(value) {
-      value = value.trim();
-      if (['issues', 'prs'].includes(value)) {
-        value = value.slice(0, -1);
+        return {value};
       }
-
-      return {value};
     }
-  }
-});
+  };
+})
+  .extend(joi => {
+    return {
+      type: 'timeInterval',
+      base: joi.array(),
+      messages: {
+        'timeInterval.asc':
+          '{{#label}} the start date must be earlier than the end date'
+      },
+      coerce: {
+        from: 'string',
+        method(value, helpers) {
+          value = value.trim();
+          if (value) {
+            value = value
+              .split('/')
+              .map(item => item.trim())
+              .filter(Boolean);
+          }
+
+          return {value};
+        }
+      },
+      rules: {
+        asc: {
+          validate(value, helpers, args, options) {
+            if (value[0] < value[1]) {
+              return value;
+            }
+
+            return helpers.error('timeInterval.asc');
+          }
+        }
+      }
+    };
+  })
+  .extend(joi => {
+    return {
+      type: 'processOnly',
+      base: joi.string(),
+      coerce: {
+        from: 'string',
+        method(value, helpers) {
+          value = value.trim();
+          if (['issues', 'prs'].includes(value)) {
+            value = value.slice(0, -1);
+          }
+
+          return {value};
+        }
+      }
+    };
+  });
+
+const joiDate = Joi.alternatives().try(
+  Joi.date()
+    // .iso()
+    .min('1970-01-01T00:00:00Z')
+    .max('2970-12-31T23:59:59Z'),
+  Joi.string().trim().valid('')
+);
+
+const joiTimeInterval = Joi.alternatives().try(
+  extendedJoi
+    .timeInterval()
+    .items(
+      Joi.date().iso().min('1970-01-01T00:00:00Z').max('2970-12-31T23:59:59Z')
+    )
+    .length(2)
+    .asc(),
+  Joi.string().trim().valid('')
+);
+
+const joiLabels = Joi.alternatives().try(
+  extendedJoi
+    .stringList()
+    .items(Joi.string().trim().max(50))
+    .min(1)
+    .max(30)
+    .unique(),
+  Joi.string().trim().valid('')
+);
 
 const schema = Joi.object({
   'github-token': Joi.string().trim().max(100),
 
-  'issue-lock-inactive-days': Joi.number()
+  'issue-inactive-days': Joi.number()
     .min(0)
     .max(3650)
     .precision(9)
     .default(365),
 
-  'issue-exclude-created-before': Joi.alternatives()
-    .try(
-      Joi.date()
-        // .iso()
-        .min('1970-01-01T00:00:00Z')
-        .max('2970-12-31T23:59:59Z'),
-      Joi.string().trim().valid('')
-    )
-    .default(''),
+  'exclude-issue-created-before': joiDate.default(''),
 
-  'issue-exclude-labels': Joi.alternatives()
-    .try(
-      extendedJoi
-        .stringList()
-        .items(Joi.string().trim().max(50))
-        .min(1)
-        .max(30)
-        .unique(),
-      Joi.string().trim().valid('')
-    )
-    .default(''),
+  'exclude-issue-created-after': joiDate.default(''),
 
-  'issue-lock-labels': Joi.alternatives()
-    .try(
-      extendedJoi
-        .stringList()
-        .items(Joi.string().trim().max(50))
-        .min(1)
-        .max(30)
-        .unique(),
-      Joi.string().trim().valid('')
-    )
-    .default(''),
+  'exclude-issue-created-between': joiTimeInterval.default(''),
 
-  'issue-lock-comment': Joi.string().trim().max(10000).allow('').default(''),
+  'exclude-issue-closed-before': joiDate.default(''),
+
+  'exclude-issue-closed-after': joiDate.default(''),
+
+  'exclude-issue-closed-between': joiTimeInterval.default(''),
+
+  'include-any-issue-labels': joiLabels.default(''),
+
+  'include-all-issue-labels': joiLabels.default(''),
+
+  'exclude-any-issue-labels': joiLabels.default(''),
+
+  'add-issue-labels': joiLabels.default(''),
+
+  'remove-issue-labels': joiLabels.default(''),
+
+  'issue-comment': Joi.string().trim().max(10000).allow('').default(''),
 
   'issue-lock-reason': Joi.string()
     .valid('resolved', 'off-topic', 'too heated', 'spam', '')
     .default('resolved'),
 
-  'pr-lock-inactive-days': Joi.number()
-    .min(0)
-    .max(3650)
-    .precision(9)
-    .default(365),
+  'pr-inactive-days': Joi.number().min(0).max(3650).precision(9).default(365),
 
-  'pr-exclude-created-before': Joi.alternatives()
-    .try(
-      Joi.date()
-        // .iso()
-        .min('1970-01-01T00:00:00Z')
-        .max('2970-12-31T23:59:59Z'),
-      Joi.string().trim().valid('')
-    )
-    .default(''),
+  'exclude-pr-created-before': joiDate.default(''),
 
-  'pr-exclude-labels': Joi.alternatives()
-    .try(
-      extendedJoi
-        .stringList()
-        .items(Joi.string().trim().max(50))
-        .min(1)
-        .max(30)
-        .unique(),
-      Joi.string().trim().valid('')
-    )
-    .default(''),
+  'exclude-pr-created-after': joiDate.default(''),
 
-  'pr-lock-labels': Joi.alternatives()
-    .try(
-      extendedJoi
-        .stringList()
-        .items(Joi.string().trim().max(50))
-        .min(1)
-        .max(30)
-        .unique(),
-      Joi.string().trim().valid('')
-    )
-    .default(''),
+  'exclude-pr-created-between': joiTimeInterval.default(''),
 
-  'pr-lock-comment': Joi.string().trim().max(10000).allow('').default(''),
+  'exclude-pr-closed-before': joiDate.default(''),
+
+  'exclude-pr-closed-after': joiDate.default(''),
+
+  'exclude-pr-closed-between': joiTimeInterval.default(''),
+
+  'include-any-pr-labels': joiLabels.default(''),
+
+  'include-all-pr-labels': joiLabels.default(''),
+
+  'exclude-any-pr-labels': joiLabels.default(''),
+
+  'add-pr-labels': joiLabels.default(''),
+
+  'remove-pr-labels': joiLabels.default(''),
+
+  'pr-comment': Joi.string().trim().max(10000).allow('').default(''),
 
   'pr-lock-reason': Joi.string()
     .valid('resolved', 'off-topic', 'too heated', 'spam', '')
     .default('resolved'),
 
-  'process-only': extendedJoi.processOnly().valid('issue', 'pr', '').default('')
+  'process-only': extendedJoi
+    .processOnly()
+    .valid('issue', 'pr', '')
+    .default(''),
+
+  'log-output': Joi.boolean().default(false)
 });
 
 module.exports = schema;
@@ -24279,7 +24355,7 @@ module.exports = JSON.parse('[["0","\\u0000",128],["a1","｡",62],["8140","　�
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"_from":"joi@^17.4.0","_id":"joi@17.4.0","_inBundle":false,"_integrity":"sha512-F4WiW2xaV6wc1jxete70Rw4V/VuMd6IN+a5ilZsxG4uYtUXWu2kq9W5P2dz30e7Gmw8RCbY/u/uk+dMPma9tAg==","_location":"/joi","_phantomChildren":{},"_requested":{"type":"range","registry":true,"raw":"joi@^17.4.0","name":"joi","escapedName":"joi","rawSpec":"^17.4.0","saveSpec":null,"fetchSpec":"^17.4.0"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/joi/-/joi-17.4.0.tgz","_shasum":"b5c2277c8519e016316e49ababd41a1908d9ef20","_spec":"joi@^17.4.0","_where":"/media/s1/dev/pr/lock-threads","browser":"dist/joi-browser.min.js","bugs":{"url":"https://github.com/sideway/joi/issues"},"bundleDependencies":false,"dependencies":{"@hapi/hoek":"^9.0.0","@hapi/topo":"^5.0.0","@sideway/address":"^4.1.0","@sideway/formula":"^3.0.0","@sideway/pinpoint":"^2.0.0"},"deprecated":false,"description":"Object schema validation","devDependencies":{"@hapi/bourne":"2.x.x","@hapi/code":"8.x.x","@hapi/joi-legacy-test":"npm:@hapi/joi@15.x.x","@hapi/lab":"24.x.x","typescript":"4.0.x"},"files":["lib/**/*","dist/*"],"homepage":"https://github.com/sideway/joi#readme","keywords":["schema","validation"],"license":"BSD-3-Clause","main":"lib/index.js","name":"joi","repository":{"type":"git","url":"git://github.com/sideway/joi.git"},"scripts":{"prepublishOnly":"cd browser && npm install && npm run build","test":"lab -t 100 -a @hapi/code -L -Y","test-cov-html":"lab -r html -o coverage.html -a @hapi/code"},"types":"lib/index.d.ts","version":"17.4.0"}');
+module.exports = JSON.parse('{"_from":"joi@^17.4.2","_id":"joi@17.4.2","_inBundle":false,"_integrity":"sha512-Lm56PP+n0+Z2A2rfRvsfWVDXGEWjXxatPopkQ8qQ5mxCEhwHG+Ettgg5o98FFaxilOxozoa14cFhrE/hOzh/Nw==","_location":"/joi","_phantomChildren":{},"_requested":{"type":"range","registry":true,"raw":"joi@^17.4.2","name":"joi","escapedName":"joi","rawSpec":"^17.4.2","saveSpec":null,"fetchSpec":"^17.4.2"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/joi/-/joi-17.4.2.tgz","_shasum":"02f4eb5cf88e515e614830239379dcbbe28ce7f7","_spec":"joi@^17.4.2","_where":"/app","browser":"dist/joi-browser.min.js","bugs":{"url":"https://github.com/sideway/joi/issues"},"bundleDependencies":false,"dependencies":{"@hapi/hoek":"^9.0.0","@hapi/topo":"^5.0.0","@sideway/address":"^4.1.0","@sideway/formula":"^3.0.0","@sideway/pinpoint":"^2.0.0"},"deprecated":false,"description":"Object schema validation","devDependencies":{"@hapi/bourne":"2.x.x","@hapi/code":"8.x.x","@hapi/joi-legacy-test":"npm:@hapi/joi@15.x.x","@hapi/lab":"24.x.x","typescript":"4.3.x"},"files":["lib/**/*","dist/*"],"homepage":"https://github.com/sideway/joi#readme","keywords":["schema","validation"],"license":"BSD-3-Clause","main":"lib/index.js","name":"joi","repository":{"type":"git","url":"git://github.com/sideway/joi.git"},"scripts":{"prepublishOnly":"cd browser && npm install && npm run build","test":"lab -t 100 -a @hapi/code -L -Y","test-cov-html":"lab -r html -o coverage.html -a @hapi/code"},"types":"lib/index.d.ts","version":"17.4.2"}');
 
 /***/ }),
 
@@ -24287,7 +24363,7 @@ module.exports = JSON.parse('{"_from":"joi@^17.4.0","_id":"joi@17.4.0","_inBundl
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("assert");;
+module.exports = require("assert");
 
 /***/ }),
 
@@ -24295,7 +24371,7 @@ module.exports = require("assert");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("buffer");;
+module.exports = require("buffer");
 
 /***/ }),
 
@@ -24303,7 +24379,7 @@ module.exports = require("buffer");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("events");;
+module.exports = require("events");
 
 /***/ }),
 
@@ -24311,7 +24387,7 @@ module.exports = require("events");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("fs");;
+module.exports = require("fs");
 
 /***/ }),
 
@@ -24319,7 +24395,7 @@ module.exports = require("fs");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("http");;
+module.exports = require("http");
 
 /***/ }),
 
@@ -24327,7 +24403,7 @@ module.exports = require("http");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("https");;
+module.exports = require("https");
 
 /***/ }),
 
@@ -24335,7 +24411,7 @@ module.exports = require("https");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("net");;
+module.exports = require("net");
 
 /***/ }),
 
@@ -24343,7 +24419,7 @@ module.exports = require("net");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("os");;
+module.exports = require("os");
 
 /***/ }),
 
@@ -24351,7 +24427,7 @@ module.exports = require("os");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("path");;
+module.exports = require("path");
 
 /***/ }),
 
@@ -24359,7 +24435,7 @@ module.exports = require("path");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("stream");;
+module.exports = require("stream");
 
 /***/ }),
 
@@ -24367,7 +24443,7 @@ module.exports = require("stream");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("string_decoder");;
+module.exports = require("string_decoder");
 
 /***/ }),
 
@@ -24375,7 +24451,7 @@ module.exports = require("string_decoder");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("tls");;
+module.exports = require("tls");
 
 /***/ }),
 
@@ -24383,7 +24459,7 @@ module.exports = require("tls");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("url");;
+module.exports = require("url");
 
 /***/ }),
 
@@ -24391,7 +24467,7 @@ module.exports = require("url");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("util");;
+module.exports = require("util");
 
 /***/ }),
 
@@ -24399,7 +24475,7 @@ module.exports = require("util");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("zlib");;
+module.exports = require("zlib");
 
 /***/ })
 
@@ -24438,7 +24514,9 @@ module.exports = require("zlib");;
 /************************************************************************/
 /******/ 	/* webpack/runtime/compat */
 /******/ 	
-/******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";/************************************************************************/
+/******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
+/******/ 	
+/************************************************************************/
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
@@ -24467,19 +24545,31 @@ class App {
 
   async lockThreads() {
     const type = this.config['process-only'];
-    const threadTypes = type ? [type] : ['issue', 'pr'];
+    const logOutput = this.config['log-output'];
 
+    const threadTypes = type ? [type] : ['issue', 'pr'];
     for (const item of threadTypes) {
       const threads = await this.lock(item);
+
       core.debug(`Setting output (${item}s)`);
-      core.setOutput(`${item}s`, threads.length ? JSON.stringify(threads) : '');
+      if (threads.length) {
+        core.setOutput(`${item}s`, JSON.stringify(threads));
+
+        if (logOutput) {
+          core.info(`Output (${item}s):`);
+          core.info(JSON.stringify(threads, null, 2));
+        }
+      } else {
+        core.setOutput(`${item}s`, '');
+      }
     }
   }
 
   async lock(type) {
     const repo = github.context.repo;
-    const lockLabels = this.config[`${type}-lock-labels`];
-    const lockComment = this.config[`${type}-lock-comment`];
+    const addLabels = this.config[`add-${type}-labels`];
+    const removeLabels = this.config[`remove-${type}-labels`];
+    const comment = this.config[`${type}-comment`];
     const lockReason = this.config[`${type}-lock-reason`];
 
     const threads = [];
@@ -24488,12 +24578,12 @@ class App {
     for (const result of results) {
       const issue = {...repo, issue_number: result.number};
 
-      if (lockComment) {
+      if (comment) {
         core.debug(`Commenting (${type}: ${issue.issue_number})`);
         try {
           await this.client.rest.issues.createComment({
             ...issue,
-            body: lockComment
+            body: comment
           });
         } catch (err) {
           if (!/cannot be modified.*discussion/i.test(err.message)) {
@@ -24502,12 +24592,39 @@ class App {
         }
       }
 
-      if (lockLabels) {
-        core.debug(`Labeling (${type}: ${issue.issue_number})`);
-        await this.client.rest.issues.addLabels({
-          ...issue,
-          labels: lockLabels
-        });
+      if (addLabels || removeLabels) {
+        const {data: issueData} = await this.client.rest.issues.get({...issue});
+
+        if (addLabels) {
+          const currentLabels = issueData.labels.map(label => label.name);
+          const newLabels = addLabels.filter(
+            label => !currentLabels.includes(label)
+          );
+
+          if (newLabels.length) {
+            core.debug(`Labeling (${type}: ${issue.issue_number})`);
+            await this.client.rest.issues.addLabels({
+              ...issue,
+              labels: newLabels
+            });
+          }
+        }
+
+        if (removeLabels) {
+          const currentLabels = issueData.labels.map(label => label.name);
+          const matchingLabels = currentLabels.filter(label =>
+            removeLabels.includes(label)
+          );
+          if (matchingLabels.length) {
+            core.debug(`Unlabeling (${type}: ${issue.issue_number})`);
+            for (const label of matchingLabels) {
+              await this.client.rest.issues.removeLabel({
+                ...issue,
+                name: label
+              });
+            }
+          }
+        }
       }
 
       core.debug(`Locking (${type}: ${issue.issue_number})`);
@@ -24533,22 +24650,41 @@ class App {
 
   async search(type) {
     const {owner, repo} = github.context.repo;
-    const timestamp = this.getUpdatedTimestamp(
-      this.config[`${type}-lock-inactive-days`]
+    const updatedTime = this.getUpdatedTimestamp(
+      this.config[`${type}-inactive-days`]
     );
-    let query = `repo:${owner}/${repo} updated:<${timestamp} is:closed is:unlocked`;
+    let query = `repo:${owner}/${repo} updated:<${updatedTime} is:closed is:unlocked`;
 
-    const excludeLabels = this.config[`${type}-exclude-labels`];
-    if (excludeLabels) {
-      const queryPart = excludeLabels
-        .map(label => `-label:"${label}"`)
-        .join(' ');
-      query += ` ${queryPart}`;
+    const includeAnyLabels = this.config[`include-any-${type}-labels`];
+    const includeAllLabels = this.config[`include-all-${type}-labels`];
+
+    if (includeAllLabels) {
+      query += ` ${includeAllLabels
+        .map(label => `label:"${label}"`)
+        .join(' ')}`;
+    } else if (includeAnyLabels) {
+      query += ` label:${includeAnyLabels.join(',')}`;
     }
 
-    const excludeCreatedBefore = this.config[`${type}-exclude-created-before`];
-    if (excludeCreatedBefore) {
-      query += ` created:>${this.getISOTimestamp(excludeCreatedBefore)}`;
+    const excludeAnyLabels = this.config[`exclude-any-${type}-labels`];
+    if (excludeAnyLabels) {
+      query += ` -label:${excludeAnyLabels.join(',')}`;
+    }
+
+    const excludeCreatedQuery = this.getFilterByDateQuery({
+      type,
+      qualifier: 'created'
+    });
+    if (excludeCreatedQuery) {
+      query += ` ${excludeCreatedQuery}`;
+    }
+
+    const excludeClosedQuery = this.getFilterByDateQuery({
+      type,
+      qualifier: 'closed'
+    });
+    if (excludeClosedQuery) {
+      query += ` ${excludeClosedQuery}`;
     }
 
     if (type === 'issue') {
@@ -24569,6 +24705,26 @@ class App {
 
     // results may include locked issues
     return results.filter(issue => !issue.locked);
+  }
+
+  getFilterByDateQuery({type, qualifier = 'created'} = {}) {
+    const beforeDate = this.config[`exclude-${type}-${qualifier}-before`];
+    const afterDate = this.config[`exclude-${type}-${qualifier}-after`];
+    const betweenDates = this.config[`exclude-${type}-${qualifier}-between`];
+
+    if (betweenDates) {
+      return `-${qualifier}:${betweenDates
+        .map(date => this.getISOTimestamp(date))
+        .join('..')}`;
+    } else if (beforeDate && afterDate) {
+      return `${qualifier}:${this.getISOTimestamp(
+        beforeDate
+      )}..${this.getISOTimestamp(afterDate)}`;
+    } else if (beforeDate) {
+      return `${qualifier}:>${this.getISOTimestamp(beforeDate)}`;
+    } else if (afterDate) {
+      return `${qualifier}:<${this.getISOTimestamp(afterDate)}`;
+    }
   }
 
   getUpdatedTimestamp(days) {
