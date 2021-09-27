@@ -1,23 +1,26 @@
 name: Create release
 
 on:
-  create:
+  push:
     tags:
-      - 'v*.*'
+      - 'v[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
   release:
     name: Release on GitHub
-    runs-on: ubuntu-18.04
-    if: contains(github.ref, '.')
+    runs-on: ubuntu-20.04
+    permissions:
+      contents: write
     steps:
+      - name: Get release information
+        id: release_info
+        run: |
+          echo ::set-output name=TAG::${GITHUB_REF/refs\/tags\//}
+          echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\/v/}
       - name: Create GitHub release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+        uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
+          tag_name: ${{ steps.release_info.outputs.TAG }}
+          name: ${{ steps.release_info.outputs.TAG }}
           body: >
             Learn more about this release from the [changelog](https://github.com/dessant/lock-threads/blob/master/CHANGELOG.md#changelog).
