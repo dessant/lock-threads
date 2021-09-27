@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://github.com/dessant/lock-threads/compare/v2.1.2...v3.0.0) (2021-09-27)
+
+
+### ⚠ BREAKING CHANGES
+
+* input parameter names have changed
+
+### Features
+
+* add new filtering and labeling options, update input parameter names ([26fd836](https://github.com/dessant/lock-threads/commit/26fd836f96f46625de24663c4dc2b84c8408fcb1))
+* allow manual triggering ([a0c7da3](https://github.com/dessant/lock-threads/commit/a0c7da306555d946273957477018fe178130ccf9))
+
 ### [2.1.2](https://github.com/dessant/lock-threads/compare/v2.1.1...v2.1.2) (2021-08-17)
 
 
