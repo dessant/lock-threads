@@ -3,7 +3,7 @@
 Lock Threads is a GitHub Action that locks closed issues
 and pull requests after a period of inactivity.
 
-![](assets/screenshot.png)
+<img width="800" src="https://raw.githubusercontent.com/dessant/lock-threads/master/assets/screenshot.png">
 
 ## Supporting the Project
 
