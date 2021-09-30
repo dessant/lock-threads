@@ -9,6 +9,19 @@ All notable changes to this project will be documented in this file. See [standa
 
 * input parameter names have changed
 
+  Rename the following input parameters when upgrading from v2 to v3:
+
+  * `issue-lock-inactive-days` --> `issue-inactive-days`
+  * `issue-exclude-created-before` --> `exclude-issue-created-before`
+  * `issue-exclude-labels` --> `exclude-any-issue-labels`
+  * `issue-lock-labels` --> `add-issue-labels`
+  * `issue-lock-comment` --> `issue-comment`
+  * `pr-lock-inactive-days` --> `pr-inactive-days`
+  * `pr-exclude-created-before` --> `exclude-pr-created-before`
+  * `pr-exclude-labels` --> `exclude-any-pr-labels`
+  * `pr-lock-labels` --> `add-pr-labels`
+  * `pr-lock-comment` --> `pr-comment`
+
 ### Features
 
 * add new filtering and labeling options, update input parameter names ([26fd836](https://github.com/dessant/lock-threads/commit/26fd836f96f46625de24663c4dc2b84c8408fcb1))
