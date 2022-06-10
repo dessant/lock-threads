@@ -55,6 +55,7 @@ class App {
     const results = await this.search(type);
     for (const result of results) {
       const issue = {...repo, issue_number: result.number};
+      core.debug(`Acting on ${type}: ${issue.issue_number}`);
 
       if (comment) {
         core.debug(`Commenting (${type}: ${issue.issue_number})`);
@@ -131,7 +132,7 @@ class App {
     const updatedTime = this.getUpdatedTimestamp(
       this.config[`${type}-inactive-days`]
     );
-    let query = `repo:${owner}/${repo} updated:<${updatedTime} is:closed is:unlocked`;
+    let query = `repo:${owner}/${repo} updated:<${updatedTime} state:closed state:unlocked`;
 
     const includeAnyLabels = this.config[`include-any-${type}-labels`];
     const includeAllLabels = this.config[`include-all-${type}-labels`];
@@ -172,6 +173,7 @@ class App {
     }
 
     core.debug(`Searching (${type}s)`);
+    core.debug(`query: ${query}`);
     const results = (
       await this.client.rest.search.issuesAndPullRequests({
         q: query,
@@ -180,6 +182,7 @@ class App {
         per_page: 50
       })
     ).data.items;
+    core.debug(`Found ${results.length} results`);
 
     // results may include locked issues
     return results.filter(issue => !issue.locked);
