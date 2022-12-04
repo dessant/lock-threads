@@ -20,18 +20,18 @@
     "push": "git push --tags origin master"
   },
   "dependencies": {
-    "@actions/core": "^1.5.0",
-    "@actions/github": "^5.0.0",
-    "joi": "^17.4.2"
+    "@actions/core": "^1.10.0",
+    "@actions/github": "^5.1.1",
+    "joi": "^17.7.0"
   },
   "devDependencies": {
-    "@vercel/ncc": "^0.31.1",
-    "npm-check-updates": "^11.8.5",
-    "prettier": "^2.4.1",
-    "standard-version": "^9.3.1"
+    "@vercel/ncc": "^0.34.0",
+    "npm-check-updates": "^16.4.3",
+    "prettier": "^2.8.0",
+    "standard-version": "^9.5.0"
   },
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=16.0.0"
   },
   "keywords": [
     "github",
