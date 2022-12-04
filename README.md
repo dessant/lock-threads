@@ -192,7 +192,7 @@ jobs:
   action:
     runs-on: ubuntu-latest
     steps:
-      - uses: dessant/lock-threads@v3
+      - uses: dessant/lock-threads@v4
 ```
 
 Edit the workflow after the initial backlog of issues and pull requests
@@ -231,7 +231,7 @@ jobs:
   action:
     runs-on: ubuntu-latest
     steps:
-      - uses: dessant/lock-threads@v3
+      - uses: dessant/lock-threads@v4
         with:
           github-token: ${{ github.token }}
           issue-inactive-days: '365'
@@ -274,7 +274,7 @@ or those with the `upstream` or `help-wanted` labels applied.
 <!-- prettier-ignore -->
 ```yaml
     steps:
-      - uses: dessant/lock-threads@v3
+      - uses: dessant/lock-threads@v4
         with:
           exclude-issue-created-before: '2018-01-01T00:00:00Z'
           exclude-any-issue-labels: 'upstream, help-wanted'
@@ -287,7 +287,7 @@ with the `wip` label applied.
 <!-- prettier-ignore -->
 ```yaml
     steps:
-      - uses: dessant/lock-threads@v3
+      - uses: dessant/lock-threads@v4
         with:
           exclude-any-pr-labels: 'wip'
           process-only: 'prs'
@@ -299,7 +299,7 @@ or those created in 2018 and 2019.
 <!-- prettier-ignore -->
 ```yaml
     steps:
-      - uses: dessant/lock-threads@v3
+      - uses: dessant/lock-threads@v4
         with:
           exclude-issue-created-between: '2018-01-01T00:00:00Z/2019-12-31T23:59:59.999Z'
           exclude-issue-closed-before: '2018-01-01T00:00:00Z'
@@ -313,7 +313,7 @@ labels applied.
 <!-- prettier-ignore -->
 ```yaml
     steps:
-      - uses: dessant/lock-threads@v3
+      - uses: dessant/lock-threads@v4
         with:
           include-any-issue-labels: 'incomplete, invalid'
           include-all-pr-labels: 'qa: done, published'
@@ -325,7 +325,7 @@ This step will lock issues that have not had any activity in the past 180 days.
 <!-- prettier-ignore -->
 ```yaml
     steps:
-      - uses: dessant/lock-threads@v3
+      - uses: dessant/lock-threads@v4
         with:
           issue-inactive-days: '180'
           process-only: 'issues'
@@ -340,7 +340,7 @@ and apply the `outdated` label to issues.
 <!-- prettier-ignore -->
 ```yaml
     steps:
-      - uses: dessant/lock-threads@v3
+      - uses: dessant/lock-threads@v4
         with:
           add-issue-labels: 'outdated'
           issue-comment: >
@@ -360,7 +360,7 @@ before locking issues.
 <!-- prettier-ignore -->
 ```yaml
     steps:
-      - uses: dessant/lock-threads@v3
+      - uses: dessant/lock-threads@v4
         with:
           add-issue-labels: 'qa: done, archived'
           remove-issue-labels: 'qa: primary, needs: user feedback'
@@ -381,7 +381,7 @@ using the `github-token` input parameter.
 <!-- prettier-ignore -->
 ```yaml
     steps:
-      - uses: dessant/lock-threads@v3
+      - uses: dessant/lock-threads@v4
         with:
           github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 ```
