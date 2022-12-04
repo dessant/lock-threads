@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.0](https://github.com/dessant/lock-threads/compare/v3.0.0...v4.0.0) (2022-12-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* the action now requires Node.js 16
+
+### Bug Fixes
+
+* update dependencies ([38e9185](https://github.com/dessant/lock-threads/commit/38e918558115222435d26c0639870cdbe3572929))
+* update docs ([32986e2](https://github.com/dessant/lock-threads/commit/32986e26965060a85db09e98ef7e5958c961ae84))
+
 ## [3.0.0](https://github.com/dessant/lock-threads/compare/v2.1.2...v3.0.0) (2021-09-27)
 
 
