@@ -18,4 +18,4 @@ jobs:
           tag_name: ${{ github.ref_name }}
           name: ${{ github.ref_name }}
           body: >
-            Learn more about this release from the [changelog](https://github.com/dessant/lock-threads/blob/master/CHANGELOG.md#changelog).
+            Learn more about this release from the [changelog](https://github.com/dessant/lock-threads/blob/main/CHANGELOG.md#changelog).
