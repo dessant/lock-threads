@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.0.1](https://github.com/dessant/lock-threads/compare/v4.0.0...v4.0.1) (2023-06-12)
+
+
+### Bug Fixes
+
+* retry and throttle GitHub API requests ([1618e91](https://github.com/dessant/lock-threads/commit/1618e91da69b9fe614fb9837ac673ea4600eb529)), closes [#35](https://github.com/dessant/lock-threads/issues/35)
+
 ## [4.0.0](https://github.com/dessant/lock-threads/compare/v3.0.0...v4.0.0) (2022-12-04)
 
 
