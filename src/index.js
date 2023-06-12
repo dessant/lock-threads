@@ -106,18 +106,13 @@ class App {
       }
 
       core.debug(`Locking (${type}: ${issue.issue_number})`);
-      let params;
+
+      const params = {...issue};
+
       if (lockReason) {
-        params = {
-          ...issue,
-          lock_reason: lockReason,
-          headers: {
-            accept: 'application/vnd.github.sailor-v-preview+json'
-          }
-        };
-      } else {
-        params = issue;
+        params.lock_reason = lockReason;
       }
+
       await this.client.rest.issues.lock(params);
 
       threads.push(issue);
