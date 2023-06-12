@@ -2,11 +2,12 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 
 const schema = require('./schema');
+const {getClient} = require('./utils');
 
 async function run() {
   try {
     const config = getConfig();
-    const client = github.getOctokit(config['github-token']);
+    const client = getClient(config['github-token']);
 
     const app = new App(config, client);
     await app.lockThreads();
