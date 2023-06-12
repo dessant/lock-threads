@@ -22,12 +22,12 @@
   "dependencies": {
     "@actions/core": "^1.10.0",
     "@actions/github": "^5.1.1",
-    "joi": "^17.7.0"
+    "joi": "^17.9.2"
   },
   "devDependencies": {
-    "@vercel/ncc": "^0.34.0",
-    "npm-check-updates": "^16.4.3",
-    "prettier": "^2.8.0",
+    "@vercel/ncc": "^0.36.1",
+    "npm-check-updates": "^16.10.12",
+    "prettier": "^2.8.8",
     "standard-version": "^9.5.0"
   },
   "engines": {
