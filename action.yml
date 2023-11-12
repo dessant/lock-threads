@@ -101,7 +101,7 @@ outputs:
   prs:
     description: 'Pull requests that have been locked, value is a JSON string'
 runs:
-  using: 'node16'
+  using: 'node20'
   main: 'dist/index.js'
 branding:
   icon: 'lock'

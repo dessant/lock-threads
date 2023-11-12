@@ -16,24 +16,24 @@
   "scripts": {
     "build": "ncc build src/index.js -o dist",
     "update": "ncu --upgrade",
-    "release": "standard-version",
+    "release": "commit-and-tag-version",
     "push": "git push --tags origin main"
   },
   "dependencies": {
-    "@actions/core": "^1.10.0",
-    "@actions/github": "^5.1.1",
-    "@octokit/plugin-throttling": "^5.2.3",
-    "@octokit/plugin-retry": "^4.1.6",
-    "joi": "^17.9.2"
+    "@actions/core": "^1.10.1",
+    "@actions/github": "^6.0.0",
+    "@octokit/plugin-throttling": "^8.1.2",
+    "@octokit/plugin-retry": "^6.0.1",
+    "joi": "^17.11.0"
   },
   "devDependencies": {
-    "@vercel/ncc": "^0.36.1",
-    "npm-check-updates": "^16.10.12",
-    "prettier": "^2.8.8",
-    "standard-version": "^9.5.0"
+    "@vercel/ncc": "^0.38.1",
+    "commit-and-tag-version": "^12.0.0",
+    "npm-check-updates": "^16.14.6",
+    "prettier": "^3.0.3"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=20.0.0"
   },
   "keywords": [
     "github",
