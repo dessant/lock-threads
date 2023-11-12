@@ -1,4 +1,4 @@
-const Joi = require('joi');
+import Joi from 'joi';
 
 const extendedJoi = Joi.extend(joi => {
   return {
@@ -177,4 +177,4 @@ const schema = Joi.object({
   'log-output': Joi.boolean().default(false)
 });
 
-module.exports = schema;
+export {schema};

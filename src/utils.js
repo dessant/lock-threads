@@ -1,10 +1,10 @@
-const core = require('@actions/core');
-const github = require('@actions/github');
-const {retry} = require('@octokit/plugin-retry');
-const {throttling} = require('@octokit/plugin-throttling');
+import core from '@actions/core';
+import github from '@actions/github';
+import {retry} from '@octokit/plugin-retry';
+import {throttling} from '@octokit/plugin-throttling';
 
 function getClient(token) {
-  const rateLimitRetries = 3;
+  const requestRetries = 3;
 
   const rateLimitCallback = function (
     retryAfter,
@@ -16,7 +16,7 @@ function getClient(token) {
       `Request quota exhausted for request ${options.method} ${options.url}`
     );
 
-    if (retryCount < rateLimitRetries) {
+    if (retryCount < requestRetries) {
       core.info(`Retrying after ${retryAfter} seconds`);
 
       return true;
@@ -24,6 +24,7 @@ function getClient(token) {
   };
 
   const options = {
+    request: {retries: requestRetries},
     throttle: {
       onSecondaryRateLimit: rateLimitCallback,
       onRateLimit: rateLimitCallback
@@ -33,4 +34,4 @@ function getClient(token) {
   return github.getOctokit(token, options, retry, throttling);
 }
 
-module.exports = {getClient};
+export {getClient};

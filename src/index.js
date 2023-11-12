@@ -1,8 +1,8 @@
-const core = require('@actions/core');
-const github = require('@actions/github');
+import core from '@actions/core';
+import github from '@actions/github';
 
-const schema = require('./schema');
-const {getClient} = require('./utils');
+import {schema} from './schema.js';
+import {getClient} from './utils.js';
 
 async function run() {
   try {

@@ -12,6 +12,7 @@
   "bugs": {
     "url": "https://github.com/dessant/lock-threads/issues"
   },
+  "type": "module",
   "main": "src/index.js",
   "scripts": {
     "build": "ncc build src/index.js -o dist",
