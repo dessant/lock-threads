@@ -1,6 +1,31 @@
 # Changelog
 
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
+
+## [5.0.0](https://github.com/dessant/lock-threads/compare/v4.0.1...v5.0.0) (2023-11-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* Discussions are also processed by default,
+set the `process-only` input parameter to preserve the old behavior
+
+```yaml
+    steps:
+      - uses: dessant/lock-threads@v5
+        with:
+          process-only: 'issues, prs'
+```
+* the action now requires Node.js 20
+
+### Features
+
+* lock discussions ([0a0976f](https://github.com/dessant/lock-threads/commit/0a0976f3ded51c88c6128dd96dd115c9f14fa764)), closes [#25](https://github.com/dessant/lock-threads/issues/25)
+
+
+### Bug Fixes
+
+* update dependencies ([5a25b54](https://github.com/dessant/lock-threads/commit/5a25b54eae3e7a5580d09ef0f7cbc5b18376db67))
 
 ### [4.0.1](https://github.com/dessant/lock-threads/compare/v4.0.0...v4.0.1) (2023-06-12)
 
