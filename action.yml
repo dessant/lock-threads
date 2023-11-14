@@ -1,5 +1,5 @@
 name: 'Lock Threads'
-description: 'Lock closed issues and pull requests after a period of inactivity'
+description: 'Lock closed issues, pull requests and discussions after a period of inactivity'
 author: 'Armin Sebastian'
 inputs:
   github-token:
@@ -89,8 +89,47 @@ inputs:
   pr-lock-reason:
     description: 'Reason for locking a pull request, value must be one of `resolved`, `off-topic`, `too heated` or `spam`'
     default: 'resolved'
+  discussion-inactive-days:
+    description: 'Number of days of inactivity before a closed discussion is locked'
+    default: '365'
+  exclude-discussion-created-before:
+    description: 'Do not lock discussions created before a given date, value must follow ISO 8601'
+    default: ''
+  exclude-discussion-created-after:
+    description: 'Do not lock discussions created after a given date, value must follow ISO 8601'
+    default: ''
+  exclude-discussion-created-between:
+    description: 'Do not lock discussions created in a given time interval, value must follow ISO 8601'
+    default: ''
+  exclude-discussion-closed-before:
+    description: 'Do not lock discussions closed before a given date, value must follow ISO 8601'
+    default: ''
+  exclude-discussion-closed-after:
+    description: 'Do not lock discussions closed after a given date, value must follow ISO 8601'
+    default: ''
+  exclude-discussion-closed-between:
+    description: 'Do not lock discussions closed in a given time interval, value must follow ISO 8601'
+    default: ''
+  include-any-discussion-labels:
+    description: 'Only lock issues with any of these labels, value must be a comma separated list of labels'
+    default: ''
+  include-all-discussion-labels:
+    description: 'Only lock discussions with all these labels, value must be a comma separated list of labels'
+    default: ''
+  exclude-any-discussion-labels:
+    description: 'Do not lock discussions with any of these labels, value must be a comma separated list of labels'
+    default: ''
+  add-discussion-labels:
+    description: 'Labels to add before locking a discussion, value must be a comma separated list of labels'
+    default: ''
+  remove-discussion-labels:
+    description: 'Labels to remove before locking a discussion, value must be a comma separated list of labels'
+    default: ''
+  discussion-comment:
+    description: 'Comment to post before locking a discussion'
+    default: ''
   process-only:
-    description: 'Limit locking to only issues or pull requests, value must be one of `issues` or `prs`'
+    description: 'Only lock issues, pull requests or discussions, value must be a comma separated list, list items must be one of `issues`, `prs` or `discussions`'
     default: ''
   log-output:
     description: 'Log output parameters, value must be either `true` or `false`'
@@ -100,6 +139,8 @@ outputs:
     description: 'Issues that have been locked, value is a JSON string'
   prs:
     description: 'Pull requests that have been locked, value is a JSON string'
+  discussions:
+    description: 'Discussions that have been locked, value is a JSON string'
 runs:
   using: 'node20'
   main: 'dist/index.js'

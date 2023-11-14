@@ -3,6 +3,21 @@ import github from '@actions/github';
 import {retry} from '@octokit/plugin-retry';
 import {throttling} from '@octokit/plugin-throttling';
 
+import {schema} from './schema.js';
+
+function getConfig() {
+  const input = Object.fromEntries(
+    Object.keys(schema.describe().keys).map(item => [item, core.getInput(item)])
+  );
+
+  const {error, value} = schema.validate(input, {abortEarly: false});
+  if (error) {
+    throw error;
+  }
+
+  return value;
+}
+
 function getClient(token) {
   const requestRetries = 3;
 
@@ -34,4 +49,4 @@ function getClient(token) {
   return github.getOctokit(token, options, retry, throttling);
 }
 
-export {getClient};
+export {getConfig, getClient};

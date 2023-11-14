@@ -58,13 +58,23 @@ const extendedJoi = Joi.extend(joi => {
   .extend(joi => {
     return {
       type: 'processOnly',
-      base: joi.string(),
+      base: joi.array(),
       coerce: {
         from: 'string',
-        method(value, helpers) {
+        method(value) {
           value = value.trim();
-          if (['issues', 'prs'].includes(value)) {
-            value = value.slice(0, -1);
+
+          if (value) {
+            value = value
+              .split(',')
+              .map(item => {
+                item = item.trim();
+                if (['issues', 'prs', 'discussions'].includes(item)) {
+                  item = item.slice(0, -1);
+                }
+                return item;
+              })
+              .filter(Boolean);
           }
 
           return {value};
@@ -74,10 +84,7 @@ const extendedJoi = Joi.extend(joi => {
   });
 
 const joiDate = Joi.alternatives().try(
-  Joi.date()
-    // .iso()
-    .min('1970-01-01T00:00:00Z')
-    .max('2970-12-31T23:59:59Z'),
+  Joi.date().iso().min('1970-01-01T00:00:00Z').max('2970-12-31T23:59:59Z'),
   Joi.string().trim().valid('')
 );
 
@@ -169,9 +176,46 @@ const schema = Joi.object({
     .valid('resolved', 'off-topic', 'too heated', 'spam', '')
     .default('resolved'),
 
-  'process-only': extendedJoi
-    .processOnly()
-    .valid('issue', 'pr', '')
+  'discussion-inactive-days': Joi.number()
+    .min(0)
+    .max(3650)
+    .precision(9)
+    .default(365),
+
+  'exclude-discussion-created-before': joiDate.default(''),
+
+  'exclude-discussion-created-after': joiDate.default(''),
+
+  'exclude-discussion-created-between': joiTimeInterval.default(''),
+
+  'exclude-discussion-closed-before': joiDate.default(''),
+
+  'exclude-discussion-closed-after': joiDate.default(''),
+
+  'exclude-discussion-closed-between': joiTimeInterval.default(''),
+
+  'include-any-discussion-labels': joiLabels.default(''),
+
+  'include-all-discussion-labels': joiLabels.default(''),
+
+  'exclude-any-discussion-labels': joiLabels.default(''),
+
+  'add-discussion-labels': joiLabels.default(''),
+
+  'remove-discussion-labels': joiLabels.default(''),
+
+  'discussion-comment': Joi.string().trim().max(10000).allow('').default(''),
+
+  'process-only': Joi.alternatives()
+    .try(
+      extendedJoi
+        .processOnly()
+        .items(Joi.string().valid('issue', 'pr', 'discussion'))
+        .min(1)
+        .max(3)
+        .unique(),
+      Joi.string().trim().valid('')
+    )
     .default(''),
 
   'log-output': Joi.boolean().default(false)

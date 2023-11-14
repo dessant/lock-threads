@@ -1,8 +1,17 @@
 import core from '@actions/core';
 import github from '@actions/github';
 
-import {schema} from './schema.js';
-import {getClient} from './utils.js';
+import {getConfig, getClient} from './utils.js';
+import {
+  searchDiscussionsQuery,
+  addDiscussionCommentQuery,
+  getLabelQuery,
+  createLabelQuery,
+  getDiscussionLabelsQuery,
+  addLabelsToLabelableQuery,
+  removeLabelsFromLabelableQuery,
+  lockLockableQuery
+} from './data.js';
 
 async function run() {
   try {
@@ -23,10 +32,10 @@ class App {
   }
 
   async lockThreads() {
-    const type = this.config['process-only'];
+    const processOnly = this.config['process-only'];
     const logOutput = this.config['log-output'];
 
-    const threadTypes = type ? [type] : ['issue', 'pr'];
+    const threadTypes = processOnly || ['issue', 'pr', 'discussion'];
     for (const item of threadTypes) {
       const threads = await this.lock(item);
 
@@ -44,93 +53,173 @@ class App {
     }
   }
 
-  async lock(type) {
-    const repo = github.context.repo;
-    const addLabels = this.config[`add-${type}-labels`];
-    const removeLabels = this.config[`remove-${type}-labels`];
-    const comment = this.config[`${type}-comment`];
-    const lockReason = this.config[`${type}-lock-reason`];
+  async lock(threadType) {
+    const {owner, repo} = github.context.repo;
+
+    const addLabels = this.config[`add-${threadType}-labels`];
+    const removeLabels = this.config[`remove-${threadType}-labels`];
+    const comment = this.config[`${threadType}-comment`];
+    const lockReason = this.config[`${threadType}-lock-reason`];
 
     const threads = [];
 
-    const results = await this.search(type);
+    const results = await this.search(threadType);
+
     for (const result of results) {
-      const issue = {...repo, issue_number: result.number};
+      const thread =
+        threadType === 'discussion'
+          ? {owner, repo, discussion_number: result.number}
+          : {owner, repo, issue_number: result.number};
+      const threadNumber = thread.discussion_number || thread.issue_number;
+      const discussionId = result.id;
 
       if (comment) {
-        core.debug(`Commenting (${type}: ${issue.issue_number})`);
-        try {
-          await this.client.rest.issues.createComment({
-            ...issue,
+        core.debug(`Commenting (${threadType}: ${threadNumber})`);
+
+        if (threadType === 'discussion') {
+          await this.client.graphql(addDiscussionCommentQuery, {
+            discussionId,
             body: comment
           });
-        } catch (err) {
-          if (!/cannot be modified.*discussion/i.test(err.message)) {
-            throw err;
-          }
-        }
-      }
-
-      if (addLabels || removeLabels) {
-        const {data: issueData} = await this.client.rest.issues.get({...issue});
-
-        if (addLabels) {
-          const currentLabels = issueData.labels.map(label => label.name);
-          const newLabels = addLabels.filter(
-            label => !currentLabels.includes(label)
-          );
-
-          if (newLabels.length) {
-            core.debug(`Labeling (${type}: ${issue.issue_number})`);
-            await this.client.rest.issues.addLabels({
-              ...issue,
-              labels: newLabels
+        } else {
+          try {
+            await this.client.rest.issues.createComment({
+              ...thread,
+              body: comment
             });
-          }
-        }
-
-        if (removeLabels) {
-          const currentLabels = issueData.labels.map(label => label.name);
-          const matchingLabels = currentLabels.filter(label =>
-            removeLabels.includes(label)
-          );
-          if (matchingLabels.length) {
-            core.debug(`Unlabeling (${type}: ${issue.issue_number})`);
-            for (const label of matchingLabels) {
-              await this.client.rest.issues.removeLabel({
-                ...issue,
-                name: label
-              });
+          } catch (err) {
+            if (!/cannot be modified.*discussion/i.test(err.message)) {
+              throw err;
             }
           }
         }
       }
 
-      core.debug(`Locking (${type}: ${issue.issue_number})`);
+      if (addLabels || removeLabels) {
+        let currentLabels;
+        if (threadType === 'discussion') {
+          ({
+            repository: {
+              discussion: {
+                labels: {nodes: currentLabels}
+              }
+            }
+          } = await this.client.graphql(getDiscussionLabelsQuery, {
+            owner,
+            repo,
+            discussion: thread.discussion_number
+          }));
+        } else {
+          ({
+            data: {labels: currentLabels}
+          } = await this.client.rest.issues.get({...thread}));
+        }
 
-      const params = {...issue};
+        if (addLabels) {
+          const currentLabelNames = currentLabels.map(label => label.name);
+          const newLabels = addLabels.filter(
+            label => !currentLabelNames.includes(label)
+          );
 
-      if (lockReason) {
-        params.lock_reason = lockReason;
+          if (newLabels.length) {
+            core.debug(`Labeling (${threadType}: ${threadNumber})`);
+
+            if (threadType === 'discussion') {
+              const labels = [];
+              for (const labelName of newLabels) {
+                let {
+                  repository: {label}
+                } = await this.client.graphql(getLabelQuery, {
+                  owner,
+                  repo,
+                  label: labelName
+                });
+
+                if (!label) {
+                  ({
+                    createLabel: {label}
+                  } = await this.client.graphql(createLabelQuery, {
+                    repositoryId: github.context.payload.repository.node_id,
+                    name: labelName,
+                    color: 'ffffff',
+                    headers: {
+                      Accept: 'application/vnd.github.bane-preview+json'
+                    }
+                  }));
+                }
+
+                labels.push(label);
+              }
+
+              await this.client.graphql(addLabelsToLabelableQuery, {
+                labelableId: discussionId,
+                labelIds: labels.map(label => label.id)
+              });
+            } else {
+              await this.client.rest.issues.addLabels({
+                ...thread,
+                labels: newLabels
+              });
+            }
+          }
+        }
+
+        if (removeLabels) {
+          const matchingLabels = currentLabels.filter(label =>
+            removeLabels.includes(label.name)
+          );
+
+          if (matchingLabels.length) {
+            core.debug(`Unlabeling (${threadType}: ${threadNumber})`);
+
+            if (threadType === 'discussion') {
+              await this.client.graphql(removeLabelsFromLabelableQuery, {
+                labelableId: discussionId,
+                labelIds: matchingLabels.map(label => label.id)
+              });
+            } else {
+              for (const label of matchingLabels) {
+                await this.client.rest.issues.removeLabel({
+                  ...thread,
+                  name: label.name
+                });
+              }
+            }
+          }
+        }
       }
 
-      await this.client.rest.issues.lock(params);
+      core.debug(`Locking (${threadType}: ${threadNumber})`);
 
-      threads.push(issue);
+      if (threadType === 'discussion') {
+        await this.client.graphql(lockLockableQuery, {
+          lockableId: discussionId
+        });
+      } else {
+        const params = {...thread};
+
+        if (lockReason) {
+          params.lock_reason = lockReason;
+        }
+
+        await this.client.rest.issues.lock(params);
+      }
+
+      threads.push(thread);
     }
 
     return threads;
   }
 
-  async search(type) {
+  async search(threadType) {
     const {owner, repo} = github.context.repo;
     const updatedTime = this.getUpdatedTimestamp(
-      this.config[`${type}-inactive-days`]
+      this.config[`${threadType}-inactive-days`]
     );
     let query = `repo:${owner}/${repo} updated:<${updatedTime} is:closed is:unlocked`;
 
-    const includeAnyLabels = this.config[`include-any-${type}-labels`];
-    const includeAllLabels = this.config[`include-all-${type}-labels`];
+    const includeAnyLabels = this.config[`include-any-${threadType}-labels`];
+    const includeAllLabels = this.config[`include-all-${threadType}-labels`];
 
     if (includeAllLabels) {
       query += ` ${includeAllLabels
@@ -140,13 +229,13 @@ class App {
       query += ` label:${includeAnyLabels.join(',')}`;
     }
 
-    const excludeAnyLabels = this.config[`exclude-any-${type}-labels`];
+    const excludeAnyLabels = this.config[`exclude-any-${threadType}-labels`];
     if (excludeAnyLabels) {
       query += ` -label:${excludeAnyLabels.join(',')}`;
     }
 
     const excludeCreatedQuery = this.getFilterByDateQuery({
-      type,
+      threadType,
       qualifier: 'created'
     });
     if (excludeCreatedQuery) {
@@ -154,37 +243,48 @@ class App {
     }
 
     const excludeClosedQuery = this.getFilterByDateQuery({
-      type,
+      threadType,
       qualifier: 'closed'
     });
     if (excludeClosedQuery) {
       query += ` ${excludeClosedQuery}`;
     }
 
-    if (type === 'issue') {
+    if (threadType === 'issue') {
       query += ' is:issue';
-    } else {
+    } else if (threadType === 'pr') {
       query += ' is:pr';
     }
 
-    core.debug(`Searching (${type}s)`);
-    const results = (
-      await this.client.rest.search.issuesAndPullRequests({
+    core.debug(`Searching (${threadType}s)`);
+
+    let results;
+    if (threadType === 'discussion') {
+      ({
+        search: {nodes: results}
+      } = await this.client.graphql(searchDiscussionsQuery, {q: query}));
+    } else {
+      ({
+        data: {items: results}
+      } = await this.client.rest.search.issuesAndPullRequests({
         q: query,
         sort: 'updated',
         order: 'desc',
         per_page: 50
-      })
-    ).data.items;
+      }));
 
-    // results may include locked issues
-    return results.filter(issue => !issue.locked);
+      // results may include locked threads
+      results = results.filter(item => !item.locked);
+    }
+
+    return results;
   }
 
-  getFilterByDateQuery({type, qualifier = 'created'} = {}) {
-    const beforeDate = this.config[`exclude-${type}-${qualifier}-before`];
-    const afterDate = this.config[`exclude-${type}-${qualifier}-after`];
-    const betweenDates = this.config[`exclude-${type}-${qualifier}-between`];
+  getFilterByDateQuery({threadType, qualifier = 'created'} = {}) {
+    const beforeDate = this.config[`exclude-${threadType}-${qualifier}-before`];
+    const afterDate = this.config[`exclude-${threadType}-${qualifier}-after`];
+    const betweenDates =
+      this.config[`exclude-${threadType}-${qualifier}-between`];
 
     if (betweenDates) {
       return `-${qualifier}:${betweenDates
@@ -210,19 +310,6 @@ class App {
   getISOTimestamp(date) {
     return date.toISOString().split('.')[0] + 'Z';
   }
-}
-
-function getConfig() {
-  const input = Object.fromEntries(
-    Object.keys(schema.describe().keys).map(item => [item, core.getInput(item)])
-  );
-
-  const {error, value} = schema.validate(input, {abortEarly: false});
-  if (error) {
-    throw error;
-  }
-
-  return value;
 }
 
 run();

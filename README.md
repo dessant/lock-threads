@@ -1,9 +1,9 @@
 # Lock Threads
 
-Lock Threads is a GitHub Action that locks closed issues
-and pull requests after a period of inactivity.
+Lock Threads is a GitHub Action that locks closed issues,
+pull requests and discussions after a period of inactivity.
 
-<img width="800" src="https://raw.githubusercontent.com/dessant/lock-threads/master/assets/screenshot.png">
+<img width="800" src="https://raw.githubusercontent.com/dessant/lock-threads/main/assets/screenshot.png">
 
 ## Supporting the Project
 
@@ -16,13 +16,13 @@ please consider contributing with
 
 ## Usage
 
-Create the `lock.yml` workflow file in the `.github/workflows` directory,
-use one of the [example workflows](#examples) to get started.
+Create the `lock-threads.yml` workflow file in the `.github/workflows`
+directory, use one of the [example workflows](#examples) to get started.
 
 ### Inputs
 
 <!-- prettier-ignore -->
-The action can be configured using [input parameters](https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idstepswith).
+The action can be configured using [input parameters](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepswith).
 
 - **`github-token`**
   - GitHub access token, value must be `${{ github.token }}` or an encrypted
@@ -146,9 +146,65 @@ The action can be configured using [input parameters](https://docs.github.com/en
   - Reason for locking a pull request, value must be one
     of `resolved`, `off-topic`, `too heated`, `spam` or `''`
   - Optional, defaults to `resolved`
+- **`discussion-inactive-days`**
+  - Number of days of inactivity before a closed discussion is locked
+  - Optional, defaults to `365`
+- **`exclude-discussion-created-before`**
+  - Do not lock discussions created before a given date,
+    value must follow ISO 8601, ignored
+    when `exclude-discussion-created-between` is set
+  - Optional, defaults to `''`
+- **`exclude-discussion-created-after`**
+  - Do not lock discussions created after a given date,
+    value must follow ISO 8601, ignored
+    when `exclude-discussion-created-between` is set
+  - Optional, defaults to `''`
+- **`exclude-discussion-created-between`**
+  - Do not lock discussions created in a given time interval,
+    value must follow ISO 8601
+  - Optional, defaults to `''`
+- **`exclude-discussion-closed-before`**
+  - Do not lock discussions closed before a given date,
+    value must follow ISO 8601, ignored
+    when `exclude-discussion-closed-between` is set
+  - Optional, defaults to `''`
+- **`exclude-discussion-closed-after`**
+  - Do not lock discussions closed after a given date,
+    value must follow ISO 8601, ignored
+    when `exclude-discussion-closed-between` is set
+  - Optional, defaults to `''`
+- **`exclude-discussion-closed-between`**
+  - Do not lock discussions closed in a given time interval,
+    value must follow ISO 8601
+  - Optional, defaults to `''`
+- **`include-any-discussion-labels`**
+  - Only lock discussions with any of these labels, value must be
+    a comma separated list of labels or `''`, ignored
+    when `include-all-discussion-labels` is set
+  - Optional, defaults to `''`
+- **`include-all-discussion-labels`**
+  - Only lock discussions with all these labels, value must be
+    a comma separated list of labels or `''`
+  - Optional, defaults to `''`
+- **`exclude-any-discussion-labels`**
+  - Do not lock discussions with any of these labels, value must be
+    a comma separated list of labels or `''`
+  - Optional, defaults to `''`
+- **`add-discussion-labels`**
+  - Labels to add before locking a discussion, value must be
+    a comma separated list of labels or `''`
+  - Optional, defaults to `''`
+- **`remove-discussion-labels`**
+  - Labels to remove before locking a discussion, value must be
+    a comma separated list of labels or `''`
+  - Optional, defaults to `''`
+- **`discussion-comment`**
+  - Comment to post before locking a discussion
+  - Optional, defaults to `''`
 - **`process-only`**
-  - Limit locking to only issues or pull requests, value must be
-    one of `issues`, `prs` or `''`
+  - Only lock issues, pull requests or discussions,
+    value must be a comma separated list, list items must be
+    one of `issues`, `prs` or `discussions`
   - Optional, defaults to `''`
 - **`log-output`**
   - Log output parameters, value must be either `true` or `false`
@@ -165,11 +221,15 @@ The action can be configured using [input parameters](https://docs.github.com/en
   - Pull requests that have been locked, value is a JSON string in the form
     of `[{"owner": "actions", "repo": "toolkit", "issue_number": 1}]`
   - Defaults to `''`
+- **`discussions`**
+  - Discussions that have been locked, value is a JSON string in the form
+    of `[{"owner": "actions", "repo": "toolkit", "discussion_number": 1}]`
+  - Defaults to `''`
 
 ## Examples
 
-The following workflow will search once an hour for closed issues
-and pull requests that have not had any activity
+The following workflow will search once an hour for closed issues,
+pull requests and discussions that have not had any activity
 in the past year and can be locked.
 
 <!-- prettier-ignore -->
@@ -184,19 +244,20 @@ on:
 permissions:
   issues: write
   pull-requests: write
+  discussions: write
 
 concurrency:
-  group: lock
+  group: lock-threads
 
 jobs:
   action:
     runs-on: ubuntu-latest
     steps:
-      - uses: dessant/lock-threads@v4
+      - uses: dessant/lock-threads@v5
 ```
 
-Edit the workflow after the initial backlog of issues and pull requests
-has been processed to reduce the frequency of scheduled runs.
+Edit the workflow after the initial backlog of issues, pull requests
+and discussions has been processed to reduce the frequency of scheduled runs.
 Running the workflow only once a day helps reduce resource usage.
 
 <!-- prettier-ignore -->
@@ -223,15 +284,16 @@ on:
 permissions:
   issues: write
   pull-requests: write
+  discussions: write
 
 concurrency:
-  group: lock
+  group: lock-threads
 
 jobs:
   action:
     runs-on: ubuntu-latest
     steps:
-      - uses: dessant/lock-threads@v4
+      - uses: dessant/lock-threads@v5
         with:
           github-token: ${{ github.token }}
           issue-inactive-days: '365'
@@ -262,11 +324,24 @@ jobs:
           remove-pr-labels: ''
           pr-comment: ''
           pr-lock-reason: 'resolved'
+          discussion-inactive-days: '365'
+          exclude-discussion-created-before: ''
+          exclude-discussion-created-after: ''
+          exclude-discussion-created-between: ''
+          exclude-discussion-closed-before: ''
+          exclude-discussion-closed-after: ''
+          exclude-discussion-closed-between: ''
+          include-any-discussion-labels: ''
+          include-all-discussion-labels: ''
+          exclude-any-discussion-labels: ''
+          add-discussion-labels: ''
+          remove-discussion-labels: ''
+          discussion-comment: ''
           process-only: ''
           log-output: false
 ```
 
-### Filtering issues and pull requests
+### Filtering issues, pull requests and discussions
 
 This step will lock only issues, and exclude issues created before 2018,
 or those with the `upstream` or `help-wanted` labels applied.
@@ -274,7 +349,7 @@ or those with the `upstream` or `help-wanted` labels applied.
 <!-- prettier-ignore -->
 ```yaml
     steps:
-      - uses: dessant/lock-threads@v4
+      - uses: dessant/lock-threads@v5
         with:
           exclude-issue-created-before: '2018-01-01T00:00:00Z'
           exclude-any-issue-labels: 'upstream, help-wanted'
@@ -287,7 +362,7 @@ with the `wip` label applied.
 <!-- prettier-ignore -->
 ```yaml
     steps:
-      - uses: dessant/lock-threads@v4
+      - uses: dessant/lock-threads@v5
         with:
           exclude-any-pr-labels: 'wip'
           process-only: 'prs'
@@ -299,7 +374,7 @@ or those created in 2018 and 2019.
 <!-- prettier-ignore -->
 ```yaml
     steps:
-      - uses: dessant/lock-threads@v4
+      - uses: dessant/lock-threads@v5
         with:
           exclude-issue-created-between: '2018-01-01T00:00:00Z/2019-12-31T23:59:59.999Z'
           exclude-issue-closed-before: '2018-01-01T00:00:00Z'
@@ -313,22 +388,24 @@ labels applied.
 <!-- prettier-ignore -->
 ```yaml
     steps:
-      - uses: dessant/lock-threads@v4
+      - uses: dessant/lock-threads@v5
         with:
           include-any-issue-labels: 'incomplete, invalid'
           include-all-pr-labels: 'qa: done, published'
+          process-only: 'issues, prs'
 
 ```
 
-This step will lock issues that have not had any activity in the past 180 days.
+This step will lock discussions that have not had any activity
+in the past 180 days.
 
 <!-- prettier-ignore -->
 ```yaml
     steps:
-      - uses: dessant/lock-threads@v4
+      - uses: dessant/lock-threads@v5
         with:
-          issue-inactive-days: '180'
-          process-only: 'issues'
+          discussion-inactive-days: '180'
+          process-only: 'discussions'
 
 ```
 
@@ -340,7 +417,7 @@ and apply the `outdated` label to issues.
 <!-- prettier-ignore -->
 ```yaml
     steps:
-      - uses: dessant/lock-threads@v4
+      - uses: dessant/lock-threads@v5
         with:
           add-issue-labels: 'outdated'
           issue-comment: >
@@ -351,6 +428,7 @@ and apply the `outdated` label to issues.
             This pull request has been automatically locked since there
             has not been any recent activity after it was closed.
             Please open a new issue for related bugs.
+          process-only: 'issues, prs'
 ```
 
 This step will apply the `qa: done` and `archived` labels,
@@ -360,10 +438,11 @@ before locking issues.
 <!-- prettier-ignore -->
 ```yaml
     steps:
-      - uses: dessant/lock-threads@v4
+      - uses: dessant/lock-threads@v5
         with:
           add-issue-labels: 'qa: done, archived'
           remove-issue-labels: 'qa: primary, needs: user feedback'
+          process-only: 'issues'
 ```
 
 ### Using a personal access token
@@ -372,39 +451,38 @@ The action uses an installation access token by default to interact with GitHub.
 You may also authenticate with a personal access token to perform actions
 as a GitHub user instead of the `github-actions` app.
 
-Create a [personal access token](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token)
+Create a [personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic)
 with the `repo` or `public_repo` scopes enabled, and add the token as an
-[encrypted secret](https://docs.github.com/en/actions/reference/encrypted-secrets#creating-encrypted-secrets-for-a-repository)
+[encrypted secret](https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions#creating-secrets-for-a-repository)
 for the repository or organization, then provide the action with the secret
 using the `github-token` input parameter.
 
 <!-- prettier-ignore -->
 ```yaml
     steps:
-      - uses: dessant/lock-threads@v4
+      - uses: dessant/lock-threads@v5
         with:
           github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 ```
 
-## How are issues and pull requests determined to be inactive?
+## How are issues, pull requests and discussions determined to be inactive?
 
-The action uses GitHub's [updated](https://help.github.com/en/github/searching-for-information-on-github/searching-issues-and-pull-requests#search-by-when-an-issue-or-pull-request-was-created-or-last-updated)
-search qualifier to determine inactivity. Any change to an issue or pull request
-is considered an update, including comments, changing labels,
-applying or removing milestones, or pushing commits.
+The action uses GitHub's [updated](https://docs.github.com/en/search-github/searching-on-github/searching-issues-and-pull-requests#search-by-when-an-issue-or-pull-request-was-created-or-last-updated)
+search qualifier to determine inactivity. Any change to an issue, pull request
+or discussion is considered an update, including new comments,
+or changing labels.
 
-An easy way to check and see which issues or pull requests will initially
-be locked is to add the `updated` search qualifier to either the issue
-or pull request search field for your repository:
+An easy way to see which threads will initially be locked is to add
+the `updated` search qualifier to the issue, pull request or discussion
+search field for your repository, adjust the date based on the value
+of the `*-inactive-days` input parameter:
 `is:closed is:unlocked updated:<2018-12-20`.
-Adjust the date to be 365 days ago (or whatever you set for `*-inactive-days`)
-to see which issues or pull requests will be locked.
 
-## Why are only some issues and pull requests processed?
+## Why are only some issues, pull requests and discussions processed?
 
-To avoid triggering abuse prevention mechanisms on GitHub, only 50 issues
-and pull requests will be handled at once. If your repository has more
-than that, it will just take a few hours or days to process them all.
+To avoid triggering abuse prevention mechanisms on GitHub, only 50 threads
+will be handled at a time. If your repository has more than that,
+it will take a few hours or days to process them all.
 
 ## License
 
