@@ -226,12 +226,16 @@ class App {
         .map(label => `label:"${label}"`)
         .join(' ')}`;
     } else if (includeAnyLabels) {
-      query += ` label:${includeAnyLabels.join(',')}`;
+      query += ` label:${includeAnyLabels
+        .map(label => `"${label}"`)
+        .join(',')}`;
     }
 
     const excludeAnyLabels = this.config[`exclude-any-${threadType}-labels`];
     if (excludeAnyLabels) {
-      query += ` -label:${excludeAnyLabels.join(',')}`;
+      query += ` -label:${excludeAnyLabels
+        .map(label => `"${label}"`)
+        .join(',')}`;
     }
 
     const excludeCreatedQuery = this.getFilterByDateQuery({

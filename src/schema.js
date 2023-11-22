@@ -11,7 +11,10 @@ const extendedJoi = Joi.extend(joi => {
         if (value) {
           value = value
             .split(',')
-            .map(item => item.trim())
+            .map(item =>
+              // remove quotes around list item
+              item.replace(/^\s*["'](.+)["']\s*$/, '$1').trim()
+            )
             .filter(Boolean);
         }
 

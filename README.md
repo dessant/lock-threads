@@ -344,7 +344,7 @@ jobs:
 ### Filtering issues, pull requests and discussions
 
 This step will lock only issues, and exclude issues created before 2018,
-or those with the `upstream` or `help-wanted` labels applied.
+or those with the `help wanted` or `upstream` labels applied.
 
 <!-- prettier-ignore -->
 ```yaml
@@ -352,7 +352,7 @@ or those with the `upstream` or `help-wanted` labels applied.
       - uses: dessant/lock-threads@v5
         with:
           exclude-issue-created-before: '2018-01-01T00:00:00Z'
-          exclude-any-issue-labels: 'upstream, help-wanted'
+          exclude-any-issue-labels: 'help wanted, upstream'
           process-only: 'issues'
 ```
 
@@ -393,11 +393,10 @@ labels applied.
           include-any-issue-labels: 'incomplete, invalid'
           include-all-pr-labels: 'qa: done, published'
           process-only: 'issues, prs'
-
 ```
 
 This step will lock discussions that have not had any activity
-in the past 180 days.
+in the past 180 days, and have the `qa: verified` label applied.
 
 <!-- prettier-ignore -->
 ```yaml
@@ -405,8 +404,8 @@ in the past 180 days.
       - uses: dessant/lock-threads@v5
         with:
           discussion-inactive-days: '180'
+          include-any-discussion-labels: 'qa: verified'
           process-only: 'discussions'
-
 ```
 
 ### Commenting and labeling
