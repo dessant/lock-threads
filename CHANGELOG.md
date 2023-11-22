@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [5.0.1](https://github.com/dessant/lock-threads/compare/v5.0.0...v5.0.1) (2023-11-22)
+
+
+### Bug Fixes
+
+* support filtering threads by labels with spaces ([0a63678](https://github.com/dessant/lock-threads/commit/0a6367823273242f373440ac6d682e4f368a347f)), closes [#40](https://github.com/dessant/lock-threads/issues/40)
+
 ## [5.0.0](https://github.com/dessant/lock-threads/compare/v4.0.1...v5.0.0) (2023-11-14)
 
 
