@@ -46905,7 +46905,10 @@ const extendedJoi = lib.extend(joi => {
         if (value) {
           value = value
             .split(',')
-            .map(item => item.trim())
+            .map(item =>
+              // remove quotes around list item
+              item.replace(/^\s*["'](.+)["']\s*$/, '$1').trim()
+            )
             .filter(Boolean);
         }
 
@@ -47497,12 +47500,16 @@ class App {
         .map(label => `label:"${label}"`)
         .join(' ')}`;
     } else if (includeAnyLabels) {
-      query += ` label:${includeAnyLabels.join(',')}`;
+      query += ` label:${includeAnyLabels
+        .map(label => `"${label}"`)
+        .join(',')}`;
     }
 
     const excludeAnyLabels = this.config[`exclude-any-${threadType}-labels`];
     if (excludeAnyLabels) {
-      query += ` -label:${excludeAnyLabels.join(',')}`;
+      query += ` -label:${excludeAnyLabels
+        .map(label => `"${label}"`)
+        .join(',')}`;
     }
 
     const excludeCreatedQuery = this.getFilterByDateQuery({
