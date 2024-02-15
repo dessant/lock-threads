@@ -80,6 +80,9 @@ The action can be configured using [input parameters](https://docs.github.com/en
   - Labels to remove before locking an issue, value must be
     a comma separated list of labels or `''`
   - Optional, defaults to `''`
+- **`include-issue-currently-open`**
+  - Open issues are also eligible to be locked.
+  - Optional, defaults to `false`
 - **`issue-comment`**
   - Comment to post before locking an issue
   - Optional, defaults to `''`
@@ -139,6 +142,9 @@ The action can be configured using [input parameters](https://docs.github.com/en
   - Labels to remove before locking a pull request, value must be
     a comma separated list of labels or `''`
   - Optional, defaults to `''`
+- **`include-pr-currently-open`**
+  - Open pull requests are also eligible to be locked.
+  - Optional, defaults to `false`
 - **`pr-comment`**
   - Comment to post before locking a pull request
   - Optional, defaults to `''`
@@ -198,6 +204,11 @@ The action can be configured using [input parameters](https://docs.github.com/en
   - Labels to remove before locking a discussion, value must be
     a comma separated list of labels or `''`
   - Optional, defaults to `''`
+- **`include-discussion-currently-open`**
+  - Open discussions are also eligible to be locked. Useful 
+    for projects that do not use the open/close state on 
+    discussions.
+  - Optional, defaults to `false`
 - **`discussion-comment`**
   - Comment to post before locking a discussion
   - Optional, defaults to `''`
@@ -308,6 +319,7 @@ jobs:
           exclude-any-issue-labels: ''
           add-issue-labels: ''
           remove-issue-labels: ''
+          include-issue-currently-open: false
           issue-comment: ''
           issue-lock-reason: 'resolved'
           pr-inactive-days: '365'
@@ -322,6 +334,7 @@ jobs:
           exclude-any-pr-labels: ''
           add-pr-labels: ''
           remove-pr-labels: ''
+          include-pr-currently-open: false
           pr-comment: ''
           pr-lock-reason: 'resolved'
           discussion-inactive-days: '365'
@@ -336,6 +349,7 @@ jobs:
           exclude-any-discussion-labels: ''
           add-discussion-labels: ''
           remove-discussion-labels: ''
+          include-discussion-currently-open: false
           discussion-comment: ''
           process-only: ''
           log-output: false
