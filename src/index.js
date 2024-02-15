@@ -216,7 +216,12 @@ class App {
     const updatedTime = this.getUpdatedTimestamp(
       this.config[`${threadType}-inactive-days`]
     );
-    let query = `repo:${owner}/${repo} updated:<${updatedTime} is:closed is:unlocked`;
+    let query = `repo:${owner}/${repo} updated:<${updatedTime} is:unlocked`;
+
+    const includeOpen = this.config[`include-${threadType}-currently-open`];
+    if (!includeOpen) {
+      query += ' is:closed';
+    }
 
     const includeAnyLabels = this.config[`include-any-${threadType}-labels`];
     const includeAllLabels = this.config[`include-all-${threadType}-labels`];
