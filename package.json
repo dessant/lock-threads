@@ -1,6 +1,6 @@
 {
   "name": "lock-threads",
-  "version": "5.0.1",
+  "version": "6.0.0",
   "description": "A GitHub Action that locks closed issues and pull requests after a period of inactivity.",
   "author": "Armin Sebastian",
   "license": "MIT",
