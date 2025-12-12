@@ -142,7 +142,7 @@ outputs:
   discussions:
     description: 'Discussions that have been locked, value is a JSON string'
 runs:
-  using: 'node20'
+  using: 'node24'
   main: 'dist/index.js'
 branding:
   icon: 'lock'
