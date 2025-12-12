@@ -41,6 +41,9 @@ inputs:
   remove-issue-labels:
     description: 'Labels to remove before locking an issue, value must be a comma separated list of labels'
     default: ''
+  include-issue-currently-open:
+    description: 'Open issues are also eligible to be locked'
+    default: false
   issue-comment:
     description: 'Comment to post before locking an issue'
     default: ''
@@ -83,6 +86,9 @@ inputs:
   remove-pr-labels:
     description: 'Labels to remove before locking a pull request, value must be a comma separated list of labels'
     default: ''
+  include-pr-currently-open:
+    description: 'Open pull requests are also eligible to be locked'
+    default: false
   pr-comment:
     description: 'Comment to post before locking a pull request'
     default: ''
@@ -125,6 +131,9 @@ inputs:
   remove-discussion-labels:
     description: 'Labels to remove before locking a discussion, value must be a comma separated list of labels'
     default: ''
+  include-discussion-currently-open:
+    description: 'Open discussions are also eligible to be locked'
+    default: false
   discussion-comment:
     description: 'Comment to post before locking a discussion'
     default: ''
