@@ -8,7 +8,7 @@ on:
 jobs:
   release:
     name: Release on GitHub
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
     steps:
@@ -19,3 +19,4 @@ jobs:
           name: ${{ github.ref_name }}
           body: >
             Learn more about this release from the [changelog](https://github.com/dessant/lock-threads/blob/main/CHANGELOG.md#changelog).
+          draft: true

@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [6.0.0](https://github.com/dessant/lock-threads/compare/v5.0.1...v6.0.0) (2025-12-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* the action now requires Node.js 24
+
+### Bug Fixes
+
+* update dependencies ([6548363](https://github.com/dessant/lock-threads/commit/6548363a2d763e3a4a3a0dc04ca4a10481d8e536))
+
 ## [5.0.1](https://github.com/dessant/lock-threads/compare/v5.0.0...v5.0.1) (2023-11-22)
 
 
