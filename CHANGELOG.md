@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [6.0.1](https://github.com/dessant/lock-threads/compare/v6.0.0...v6.0.1) (2026-05-21)
+
+
+### Bug Fixes
+
+* update dependencies ([a3f9e2b](https://github.com/dessant/lock-threads/commit/a3f9e2b5b7f63af69a4b183cb3328deac8b2c6e4))
+
 ## [6.0.0](https://github.com/dessant/lock-threads/compare/v5.0.1...v6.0.0) (2025-12-12)
 
 
