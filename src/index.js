@@ -1,5 +1,5 @@
-import core from '@actions/core';
-import github from '@actions/github';
+import {debug, info, setFailed, setOutput} from '@actions/core';
+import {context} from '@actions/github';
 
 import {getConfig, getClient} from './utils.js';
 import {
@@ -21,7 +21,7 @@ async function run() {
     const app = new App(config, client);
     await app.lockThreads();
   } catch (err) {
-    core.setFailed(err.message);
+    setFailed(err.message);
   }
 }
 
@@ -39,22 +39,22 @@ class App {
     for (const item of threadTypes) {
       const threads = await this.lock(item);
 
-      core.debug(`Setting output (${item}s)`);
+      debug(`Setting output (${item}s)`);
       if (threads.length) {
-        core.setOutput(`${item}s`, JSON.stringify(threads));
+        setOutput(`${item}s`, JSON.stringify(threads));
 
         if (logOutput) {
-          core.info(`Output (${item}s):`);
-          core.info(JSON.stringify(threads, null, 2));
+          info(`Output (${item}s):`);
+          info(JSON.stringify(threads, null, 2));
         }
       } else {
-        core.setOutput(`${item}s`, '');
+        setOutput(`${item}s`, '');
       }
     }
   }
 
   async lock(threadType) {
-    const {owner, repo} = github.context.repo;
+    const {owner, repo} = context.repo;
 
     const addLabels = this.config[`add-${threadType}-labels`];
     const removeLabels = this.config[`remove-${threadType}-labels`];
@@ -74,7 +74,7 @@ class App {
       const discussionId = result.id;
 
       if (comment) {
-        core.debug(`Commenting (${threadType}: ${threadNumber})`);
+        debug(`Commenting (${threadType}: ${threadNumber})`);
 
         if (threadType === 'discussion') {
           await this.client.graphql(addDiscussionCommentQuery, {
@@ -122,7 +122,7 @@ class App {
           );
 
           if (newLabels.length) {
-            core.debug(`Labeling (${threadType}: ${threadNumber})`);
+            debug(`Labeling (${threadType}: ${threadNumber})`);
 
             if (threadType === 'discussion') {
               const labels = [];
@@ -139,7 +139,7 @@ class App {
                   ({
                     createLabel: {label}
                   } = await this.client.graphql(createLabelQuery, {
-                    repositoryId: github.context.payload.repository.node_id,
+                    repositoryId: context.payload.repository.node_id,
                     name: labelName,
                     color: 'ffffff',
                     headers: {
@@ -170,7 +170,7 @@ class App {
           );
 
           if (matchingLabels.length) {
-            core.debug(`Unlabeling (${threadType}: ${threadNumber})`);
+            debug(`Unlabeling (${threadType}: ${threadNumber})`);
 
             if (threadType === 'discussion') {
               await this.client.graphql(removeLabelsFromLabelableQuery, {
@@ -189,7 +189,7 @@ class App {
         }
       }
 
-      core.debug(`Locking (${threadType}: ${threadNumber})`);
+      debug(`Locking (${threadType}: ${threadNumber})`);
 
       if (threadType === 'discussion') {
         await this.client.graphql(lockLockableQuery, {
@@ -212,7 +212,7 @@ class App {
   }
 
   async search(threadType) {
-    const {owner, repo} = github.context.repo;
+    const {owner, repo} = context.repo;
     const updatedTime = this.getUpdatedTimestamp(
       this.config[`${threadType}-inactive-days`]
     );
@@ -260,7 +260,7 @@ class App {
       query += ' is:pr';
     }
 
-    core.debug(`Searching (${threadType}s)`);
+    debug(`Searching (${threadType}s)`);
 
     let results;
     if (threadType === 'discussion') {
