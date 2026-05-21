@@ -10,9 +10,9 @@ pull requests and discussions after a period of inactivity.
 The continued development of Lock Threads is made possible
 thanks to the support of awesome backers. If you'd like to join them,
 please consider contributing with
-[Patreon](https://armin.dev/go/patreon?pr=lock-threads&src=repo),
-[PayPal](https://armin.dev/go/paypal?pr=lock-threads&src=repo) or
-[Bitcoin](https://armin.dev/go/bitcoin?pr=lock-threads&src=repo).
+[Patreon](https://go.vapps.dev/patreon?pr=lock-threads&src=repo),
+[PayPal](https://go.vapps.dev/paypal?pr=lock-threads&src=repo) or
+[Bitcoin](https://go.vapps.dev/bitcoin?pr=lock-threads&src=repo).
 
 ## Usage
 
@@ -485,7 +485,7 @@ it will take a few hours or days to process them all.
 
 ## License
 
-Copyright (c) 2017-2025 Armin Sebastian
+Copyright (c) 2017-2026 Armin Sebastian
 
 This software is released under the terms of the MIT License.
 See the [LICENSE](LICENSE) file for further information.
