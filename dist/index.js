@@ -54921,7 +54921,7 @@ const joiLabels = joi_lib.alternatives().try(
 );
 
 const schema = joi_lib.object({
-  'github-token': joi_lib.string().trim().max(100),
+  'github-token': joi_lib.string().trim().max(1000),
 
   'issue-inactive-days': joi_lib.number()
     .min(0)
