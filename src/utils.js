@@ -1,5 +1,5 @@
-import core from '@actions/core';
-import github from '@actions/github';
+import {getInput, info} from '@actions/core';
+import {getOctokit} from '@actions/github';
 import {retry} from '@octokit/plugin-retry';
 import {throttling} from '@octokit/plugin-throttling';
 
@@ -7,7 +7,7 @@ import {schema} from './schema.js';
 
 function getConfig() {
   const input = Object.fromEntries(
-    Object.keys(schema.describe().keys).map(item => [item, core.getInput(item)])
+    Object.keys(schema.describe().keys).map(item => [item, getInput(item)])
   );
 
   const {error, value} = schema.validate(input, {abortEarly: false});
@@ -27,12 +27,12 @@ function getClient(token) {
     octokit,
     retryCount
   ) {
-    core.info(
+    info(
       `Request quota exhausted for request ${options.method} ${options.url}`
     );
 
     if (retryCount < requestRetries) {
-      core.info(`Retrying after ${retryAfter} seconds`);
+      info(`Retrying after ${retryAfter} seconds`);
 
       return true;
     }
@@ -46,7 +46,13 @@ function getClient(token) {
     }
   };
 
-  return github.getOctokit(token, options, retry, throttling);
+  const octokit = getOctokit(token, options, retry, throttling);
+
+  octokit.request = octokit.request.defaults({
+    headers: {'X-GitHub-Api-Version': '2026-03-10'}
+  });
+
+  return octokit;
 }
 
 export {getConfig, getClient};
