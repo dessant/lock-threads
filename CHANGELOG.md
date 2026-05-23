@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [6.0.2](https://github.com/dessant/lock-threads/compare/v6.0.1...v6.0.2) (2026-05-23)
+
+
+### Bug Fixes
+
+* update github-token validation schema ([a329c89](https://github.com/dessant/lock-threads/commit/a329c89d09f15f65ee0fc0c36ed36f957598ff68)), closes [#55](https://github.com/dessant/lock-threads/issues/55)
+
 ## [6.0.1](https://github.com/dessant/lock-threads/compare/v6.0.0...v6.0.1) (2026-05-21)
 
 
