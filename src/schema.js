@@ -113,7 +113,7 @@ const joiLabels = Joi.alternatives().try(
 );
 
 const schema = Joi.object({
-  'github-token': Joi.string().trim().max(100),
+  'github-token': Joi.string().trim().max(1000),
 
   'issue-inactive-days': Joi.number()
     .min(0)
