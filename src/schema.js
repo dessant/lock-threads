@@ -143,6 +143,8 @@ const schema = Joi.object({
 
   'remove-issue-labels': joiLabels.default(''),
 
+  'include-issue-currently-open': Joi.boolean().default(false),
+
   'issue-comment': Joi.string().trim().max(10000).allow('').default(''),
 
   'issue-lock-reason': Joi.string()
@@ -172,6 +174,8 @@ const schema = Joi.object({
   'add-pr-labels': joiLabels.default(''),
 
   'remove-pr-labels': joiLabels.default(''),
+
+  'include-pr-currently-open': Joi.boolean().default(false),
 
   'pr-comment': Joi.string().trim().max(10000).allow('').default(''),
 
@@ -206,6 +210,8 @@ const schema = Joi.object({
   'add-discussion-labels': joiLabels.default(''),
 
   'remove-discussion-labels': joiLabels.default(''),
+
+  'include-discussion-currently-open': Joi.boolean().default(false),
 
   'discussion-comment': Joi.string().trim().max(10000).allow('').default(''),
 
